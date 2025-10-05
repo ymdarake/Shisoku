@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Problem } from '../types';
 import { safeEvaluateExpression } from '../services/gameLogic';
@@ -16,9 +15,16 @@ interface GameScreenProps {
   locale: { [key: string]: any };
   questionNumber: number;
   totalQuestions: number;
+  elapsedTime: number;
 }
 
-export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions }) => {
+const formatTime = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+  const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+};
+
+export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime }) => {
   const [expression, setExpression] = useState('');
   const [usedNumberIndices, setUsedNumberIndices] = useState<number[]>([]);
   const [message, setMessage] = useState(locale.buildExpression);
@@ -108,7 +114,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
 
   return (
     <div className="p-4 flex flex-col items-center">
-      <div className="w-full text-center mb-2 font-bold text-lg">{`${locale.question} ${questionNumber}/${totalQuestions}`}</div>
+       <div className="w-full max-w-md mx-auto flex justify-between items-center mb-2 font-bold text-lg">
+        <span>{`${locale.question} ${questionNumber}/${totalQuestions}`}</span>
+        <div className="flex items-center space-x-2 text-indigo-500 dark:text-indigo-400">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clipRule="evenodd" />
+          </svg>
+          <span>{formatTime(elapsedTime)}</span>
+        </div>
+      </div>
       <ProblemDisplay problem={problem} locale={locale} />
       <InputDisplay expression={expression} />
       <MessageArea message={message} type={messageType} />

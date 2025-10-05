@@ -1,4 +1,3 @@
-
 import type { Locales } from '../types';
 
 export const locales: Locales = {
@@ -33,6 +32,15 @@ export const locales: Locales = {
     statusCorrect: '正解',
     statusIncorrect: '不正解',
     statusSkipped: 'スキップ',
+    time: 'タイム',
+    ranking: 'ランキング',
+    enterYourName: '名前を入力してスコアを保存',
+    saveScore: '保存してランキングを見る',
+    rank: '順位',
+    name: '名前',
+    date: '日付',
+    noRankings: 'まだランキングがありません。一番乗りを目指そう！',
+    backToMenu: 'メニューに戻る',
   },
   en: {
     title: 'Math Puzzle Game',
@@ -65,5 +73,14 @@ export const locales: Locales = {
     statusCorrect: 'Correct',
     statusIncorrect: 'Incorrect',
     statusSkipped: 'Skipped',
+    time: 'Time',
+    ranking: 'Ranking',
+    enterYourName: 'Enter your name to save your score',
+    saveScore: 'Save & View Rankings',
+    rank: 'Rank',
+    name: 'Name',
+    date: 'Date',
+    noRankings: 'No rankings yet. Be the first!',
+    backToMenu: 'Back to Menu',
   },
 };

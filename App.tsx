@@ -1,14 +1,15 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
-import type { GameState, Language, Problem, GameResult } from './types';
+import type { GameState, Language, Problem, GameResult, RankingEntry } from './types';
 import { locales } from './constants/locales';
 import { generateProblem } from './services/gameLogic';
+import { getRankings, saveRanking } from './services/ranking';
 
 import { Header } from './components/Header';
 import { StartScreen } from './components/StartScreen';
 import { GameScreen } from './components/GameScreen';
 import { EndScreen } from './components/EndScreen';
 import { MessageArea } from './components/MessageArea';
+import { RankingScreen } from './components/RankingScreen';
 
 const TOTAL_QUESTIONS = 10;
 
@@ -19,8 +20,29 @@ const App: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [results, setResults] = useState<GameResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [rankings, setRankings] = useState<RankingEntry[]>([]);
 
   const locale = locales[language];
+
+  useEffect(() => {
+    setRankings(getRankings());
+  }, []);
+
+  useEffect(() => {
+    let interval: number | undefined;
+    if (gameState === 'playing' && startTime) {
+      interval = window.setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [gameState, startTime]);
   
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
@@ -28,7 +50,6 @@ const App: React.FC = () => {
 
   const createNewProblem = useCallback(() => {
     setIsLoading(true);
-    // Use timeout to allow UI to update to loading state
     setTimeout(() => {
         const problem = generateProblem();
         setCurrentProblem(problem);
@@ -39,6 +60,8 @@ const App: React.FC = () => {
   const handleStartGame = () => {
     setCurrentQuestionIndex(0);
     setResults([]);
+    setStartTime(Date.now());
+    setElapsedTime(0);
     setGameState('playing');
     createNewProblem();
   };
@@ -70,8 +93,25 @@ const App: React.FC = () => {
     handleNextQuestion();
   };
   
-  const handlePlayAgain = () => {
+  const handleBackToTop = () => {
     setGameState('idle');
+  };
+
+  const handleShowRanking = () => {
+    setGameState('ranking');
+  };
+
+  const handleSaveRanking = (name: string) => {
+    const score = results.filter(r => r.isCorrect).length;
+    const newEntry: RankingEntry = {
+      name,
+      score,
+      time: elapsedTime,
+      date: new Date().toISOString(),
+    };
+    const updatedRankings = saveRanking(newEntry);
+    setRankings(updatedRankings);
+    setGameState('ranking');
   };
 
   const renderContent = () => {
@@ -90,19 +130,24 @@ const App: React.FC = () => {
             locale={locale}
             questionNumber={currentQuestionIndex + 1}
             totalQuestions={TOTAL_QUESTIONS}
+            elapsedTime={elapsedTime}
           />
         ) : null;
       case 'finished':
         return <EndScreen 
                   results={results} 
-                  onPlayAgain={handlePlayAgain} 
-                  onBackToTop={handlePlayAgain}
+                  onPlayAgain={handleStartGame} 
+                  onBackToTop={handleBackToTop}
+                  onSaveRanking={handleSaveRanking}
                   locale={locale}
                   totalQuestions={TOTAL_QUESTIONS}
+                  totalTime={elapsedTime}
                />;
+      case 'ranking':
+        return <RankingScreen rankings={rankings} onBackToTop={handleBackToTop} locale={locale} />;
       case 'idle':
       default:
-        return <StartScreen onStart={handleStartGame} locale={locale} />;
+        return <StartScreen onStart={handleStartGame} onShowRanking={handleShowRanking} locale={locale} />;
     }
   };
 

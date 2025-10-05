@@ -1,4 +1,3 @@
-
 export interface Problem {
   numbers: number[];
   target: number;
@@ -11,7 +10,7 @@ export interface GameResult {
   skipped: boolean;
 }
 
-export type GameState = 'idle' | 'playing' | 'finished';
+export type GameState = 'idle' | 'playing' | 'finished' | 'ranking';
 
 export type Language = 'ja' | 'en';
 
@@ -22,4 +21,11 @@ export interface Locale {
 export interface Locales {
   ja: Locale;
   en: Locale;
+}
+
+export interface RankingEntry {
+    name: string;
+    score: number;
+    time: number; // in seconds
+    date: string;
 }
