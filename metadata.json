@@ -1,0 +1,5 @@
+{
+  "name": "Math Puzzle Game",
+  "description": "A web-based game where users create mathematical expressions using four given numbers to reach a target number. The game supports both Japanese and English.",
+  "requestFramePermissions": []
+}
