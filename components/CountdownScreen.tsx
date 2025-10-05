@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { Language } from '../types';
+import { audioService } from '../services/audio';
 
 interface CountdownScreenProps {
   language: Language;
@@ -11,11 +12,13 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({ language, onComplete 
 
   useEffect(() => {
     if (count > 0) {
+      audioService.playCountdownSound();
       const timer = setTimeout(() => {
         setCount(count - 1);
       }, 1000);
       return () => clearTimeout(timer);
     } else {
+      audioService.playStartSound();
       const timer = setTimeout(() => {
         onComplete();
       }, 1000);

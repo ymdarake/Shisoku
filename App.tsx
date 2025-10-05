@@ -88,6 +88,7 @@ const App: React.FC = () => {
     } else {
       setGameState('finished');
       audioService.stopBgm();
+      audioService.playFinishSound();
     }
   }, [currentQuestionIndex, allProblems]);
 
