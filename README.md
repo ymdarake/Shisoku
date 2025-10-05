@@ -1,7 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 # 四則（Shisoku） - 四則演算パズルゲーム
 
 4つの数字と四則演算（+, -, ×, ÷）を使って目標の数字を作る数学パズルゲームです。
@@ -9,6 +5,8 @@
 ## 特徴
 
 - 🎮 10問連続のタイムアタック形式
+- ⏱️ 3,2,1カウントダウンでゲーム開始
+- 🚀 問題事前生成で快適なゲームプレイ（問題間のラグなし）
 - 🎵 Tone.jsによる音楽・効果音（BGM/SFXの個別ON/OFF可能）
 - 🏆 ローカルランキング機能（localStorage）
 - 🌐 日本語・英語の多言語対応
@@ -31,11 +29,11 @@
 
 ## 技術スタック
 
-- **React 19** - UI フレームワーク（CDN経由、importmap使用）
+- **React 19** - UI フレームワーク（npmパッケージ）
 - **TypeScript 5.8** - 型安全な開発
 - **Vite 6** - 高速ビルドツール
-- **Tone.js 14.7.77** - Web Audio API ベースの音楽ライブラリ
-- **Tailwind CSS 3** - ユーティリティファーストCSS（CDN経由）
+- **Tone.js 14.7.77** - Web Audio API ベースの音楽ライブラリ（CDN経由）
+- **Tailwind CSS 3** - ユーティリティファーストCSS（ローカルビルド with PostCSS）
 
 ## ローカル実行
 
@@ -59,7 +57,7 @@
    ```
 
 **注意**:
-- インターネット接続が必須（React、Tone.js、Tailwind CSSがCDN経由）
+- インターネット接続が必須（Tone.jsがCDN経由）
 - Gemini APIキーは不要（AI Studio連携は未使用）
 
 ## プロジェクト構造
@@ -67,21 +65,26 @@
 ```
 /
 ├── components/       # UIコンポーネント
-│   ├── StartScreen.tsx    # スタート画面
-│   ├── GameScreen.tsx     # ゲーム画面
-│   ├── EndScreen.tsx      # 結果画面
-│   ├── RankingScreen.tsx  # ランキング画面
-│   ├── Rules.tsx          # ルール表示コンポーネント
+│   ├── StartScreen.tsx      # スタート画面
+│   ├── CountdownScreen.tsx  # カウントダウン画面
+│   ├── GameScreen.tsx       # ゲーム画面
+│   ├── EndScreen.tsx        # 結果画面
+│   ├── RankingScreen.tsx    # ランキング画面
+│   ├── Rules.tsx            # ルール表示コンポーネント
 │   └── ...
 ├── services/         # ビジネスロジック
-│   ├── gameLogic.ts       # 問題生成・式評価
-│   ├── audio.ts           # Tone.js音声システム
-│   └── ranking.ts         # ランキング永続化
+│   ├── gameLogic.ts         # 問題生成・式評価
+│   ├── audio.ts             # Tone.js音声システム
+│   └── ranking.ts           # ランキング永続化
 ├── constants/
-│   └── locales.ts         # 多言語テキスト定義
+│   └── locales.ts           # 多言語テキスト定義
 ├── App.tsx           # ルートコンポーネント
+├── index.tsx         # エントリーポイント
+├── index.css         # Tailwindディレクティブとカスタムスタイル
 ├── types.ts          # TypeScript型定義
-└── index.html        # エントリーポイント
+├── postcss.config.js # PostCSS設定
+├── tailwind.config.js # Tailwind CSS設定
+└── index.html        # HTML
 ```
 
 **重要**: `src/` ディレクトリは存在せず、全てルート直下に配置

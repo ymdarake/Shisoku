@@ -30,8 +30,9 @@ npm install
 
 ```
 /
-├── components/      # UIコンポーネント（11ファイル）
+├── components/      # UIコンポーネント（12ファイル）
 │   ├── StartScreen.tsx
+│   ├── CountdownScreen.tsx  # NEW: カウントダウン画面
 │   ├── GameScreen.tsx
 │   ├── EndScreen.tsx
 │   ├── RankingScreen.tsx
@@ -50,8 +51,11 @@ npm install
 │   └── locales.ts      # 多言語テキスト定義
 ├── App.tsx             # ルートコンポーネント・状態管理
 ├── index.tsx           # エントリーポイント
+├── index.css           # NEW: Tailwindディレクティブとカスタムスタイル
 ├── types.ts            # TypeScript型定義
-└── index.html          # HTML（CDNスクリプト読み込み）
+├── postcss.config.js   # NEW: PostCSS設定
+├── tailwind.config.js  # NEW: Tailwind CSS設定
+└── index.html          # HTML
 ```
 
 **重要**: `src/` ディレクトリは存在せず、ルート直下に配置
@@ -65,9 +69,10 @@ npm install
 
 **ゲームフロー**:
 1. StartScreen → ユーザーがスタートボタンをクリック
-2. GameScreen → 10問連続でプレイ（問題自動生成）
-3. EndScreen → スコア表示・ランキング保存
-4. RankingScreen → ランキング一覧表示
+2. CountdownScreen → 3,2,1カウントダウン（この間に全10問を事前生成）
+3. GameScreen → 10問連続でプレイ（事前生成された問題を順番に表示）
+4. EndScreen → スコア表示・ランキング保存
+5. RankingScreen → ランキング一覧表示
 
 ### コアロジック（services/）
 
@@ -77,6 +82,7 @@ npm install
   - 全ての演算子組み合わせ（4³ = 64通り）
   - 5種類の括弧パターン
   - 結果が0-9の整数になる組み合わせを探索
+- `generateProblems(count)`: 複数の問題を一括生成（カウントダウン中に全10問生成）
 - `safeEvaluateExpression()`: ユーザー入力式の安全な評価
   - 数式の妥当性検証（不正な文字の排除）
   - ゼロ除算チェック
@@ -84,7 +90,10 @@ npm install
 
 **audio.ts** - Tone.jsベースの音楽システム
 - BGM: FM合成シンセ + ベース + ドラム（キック・ハイハット）の4トラック構成
-- SFX: クリック音、正解音（3和音上昇）、不正解音（不協和音）、無効操作音
+- SFX:
+  - クリック音、正解音（3和音上昇）、不正解音（不協和音）、無効操作音
+  - カウントダウン音（A4音）
+  - スタート音（C5→E5→C6の上昇和音）
 - ボリューム管理: BGMとSFXは独立してON/OFF可能
 
 **ranking.ts** - ランキング永続化
@@ -128,7 +137,7 @@ npm install
 ## 技術スタック
 
 - **フレームワーク**: React 19 (関数コンポーネント + Hooks)
-  - CDN経由でimportmap使用（AI Studio CDN: `https://aistudiocdn.com/react@^19.2.0`）
+  - npmパッケージとして管理（CDNから移行済み）
 - **ビルドツール**: Vite 6
   - サーバー: ポート3000、ホスト0.0.0.0
   - パスエイリアス: `@/` → ルートディレクトリ
@@ -137,8 +146,9 @@ npm install
   - CDN経由（`https://unpkg.com/tone@14.7.77/build/Tone.js`）
   - グローバル変数 `Tone` として宣言（型定義: `declare const Tone: any`）
 - **スタイリング**: Tailwind CSS 3
-  - CDN経由（`https://cdn.tailwindcss.com`）
+  - ローカルビルド（PostCSS + autoprefixer）
   - カスタムアニメーション: `shake-animation`（振動エフェクト）
+  - 設定ファイル: `tailwind.config.js`, `postcss.config.js`
 - **ストレージ**: localStorage（キー: `'mathPuzzleRanking'`）
 
 ## 重要な制約・仕様
@@ -153,13 +163,13 @@ npm install
 ## 開発・デバッグ時の注意点
 
 ### 環境要件
-- **インターネット接続必須**: React、Tone.js、Tailwind CSSがすべてCDN経由
+- **インターネット接続**: Tone.jsのみCDN経由（React、Tailwind CSSはローカルビルド）
 - **ブラウザAPI**: localStorage、Web Audio API（Tone.js）が必要
 - **ポート3000**: デフォルト開発サーバーポート
 
 ### 技術的制約
 - 式評価に `new Function()` を使用（サーバーサイドレンダリング不可）
-- CDN依存のため、オフライン開発不可
+- Tone.jsのみCDN依存
 - テストフレームワーク未導入（手動テストのみ）
 
 ### デバッグポイント
