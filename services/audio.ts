@@ -18,7 +18,7 @@ class AudioService {
     if (typeof Tone !== 'undefined') {
       // --- Volume Controls ---
       this.bgmVolume = new Tone.Volume(-16).toDestination();
-      this.sfxVolume = new Tone.Volume(0).toDestination();
+      this.sfxVolume = new Tone.Volume(4).toDestination();
 
       // --- BGM Instruments ---
       this.bgmSynth = new Tone.PolySynth(Tone.FMSynth, {
