@@ -142,6 +142,12 @@ class AudioService {
         this.sfxSynth.triggerAttackRelease(['C3', 'D#3'], '8n');
     }
   }
+
+  playInvalidActionSound() {
+    if (this.isInitialized && this._isSfxOn) {
+        this.sfxSynth.triggerAttackRelease('F#2', '16n');
+    }
+  }
 }
 
 export const audioService = new AudioService();

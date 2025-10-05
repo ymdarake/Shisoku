@@ -19,6 +19,7 @@ interface GameScreenProps {
   onPlayClickSound: () => void;
   onPlayCorrectSound: () => void;
   onPlayIncorrectSound: () => void;
+  onPlayInvalidActionSound: () => void;
 }
 
 interface Token {
@@ -33,7 +34,7 @@ const formatTime = (totalSeconds: number) => {
   return `${minutes}:${seconds}`;
 };
 
-export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound }) => {
+export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound, onPlayInvalidActionSound }) => {
   const [tokens, setTokens] = useState<Token[]>([]);
   const [message, setMessage] = useState(locale.buildExpression);
   const [messageType, setMessageType] = useState<'info' | 'success' | 'error'>('info');
@@ -60,9 +61,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
     // Prevent number after number e.g. "1 2"
     // Prevent number after closing parenthesis e.g. ") 2"
     if (lastToken && (lastToken.type === 'number' || lastToken.value === ')')) {
+      onPlayInvalidActionSound();
       return;
     }
     
+    onPlayClickSound();
     setTokens(prev => [...prev, { value: String(num), type: 'number', originalIndex: index }]);
   };
   
@@ -78,40 +81,55 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
       case '/':
         // Operator must follow a number or a closing parenthesis
         if (!lastToken || (lastToken.type !== 'number' && lastToken.value !== ')')) {
+          onPlayInvalidActionSound();
           return;
         }
         break;
       case '(':
         // Opening parenthesis must NOT follow a number or a closing parenthesis
         if (lastToken && (lastToken.type === 'number' || lastToken.value === ')')) {
+            onPlayInvalidActionSound();
             return;
         }
         break;
       case ')':
         // Closing parenthesis must follow a number or another closing parenthesis
         if (!lastToken || (lastToken.type !== 'number' && lastToken.value !== ')')) {
+          onPlayInvalidActionSound();
           return;
         }
         // Check for parenthesis balance
         const openParenCount = tokens.filter(t => t.value === '(').length;
         const closeParenCount = tokens.filter(t => t.value === ')').length;
         if (closeParenCount >= openParenCount) {
+          onPlayInvalidActionSound();
           return;
         }
         break;
     }
     
+    onPlayClickSound();
     setTokens(prev => [...prev, { value: op, type: 'operator' }]);
   };
   
   const handleClear = () => {
     if (isJudged) return;
-    setTokens([]);
+    if (tokens.length > 0) {
+      onPlayClickSound();
+      setTokens([]);
+    } else {
+      onPlayInvalidActionSound();
+    }
   };
 
   const handleBackspace = () => {
     if (isJudged) return;
-    setTokens(prev => prev.slice(0, -1));
+    if (tokens.length > 0) {
+      onPlayClickSound();
+      setTokens(prev => prev.slice(0, -1));
+    } else {
+      onPlayInvalidActionSound();
+    }
   };
 
 
@@ -176,7 +194,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
         onOperatorClick={handleOperatorClick}
         onClear={handleClear}
         onBackspace={handleBackspace}
-        onPlayClickSound={onPlayClickSound}
       />
       <div className="mt-4">
         <button onClick={handleSkipClick} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">

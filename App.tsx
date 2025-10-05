@@ -119,6 +119,7 @@ const App: React.FC = () => {
   const playClickSound = useCallback(() => audioService.playClickSound(), []);
   const playCorrectSound = useCallback(() => audioService.playCorrectSound(), []);
   const playIncorrectSound = useCallback(() => audioService.playIncorrectSound(), []);
+  const playInvalidActionSound = useCallback(() => audioService.playInvalidActionSound(), []);
 
   const handleSaveRanking = (name: string) => {
     const score = results.filter(r => r.isCorrect).length;
@@ -153,6 +154,7 @@ const App: React.FC = () => {
             onPlayClickSound={playClickSound}
             onPlayCorrectSound={playCorrectSound}
             onPlayIncorrectSound={playIncorrectSound}
+            onPlayInvalidActionSound={playInvalidActionSound}
           />
         ) : null;
       case 'finished':
