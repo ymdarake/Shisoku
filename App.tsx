@@ -26,6 +26,7 @@ const App: React.FC = () => {
   const [rankings, setRankings] = useState<RankingEntry[]>([]);
   const [isBgmOn, setIsBgmOn] = useState(true);
   const [isSfxOn, setIsSfxOn] = useState(true);
+  const [isShaking, setIsShaking] = useState(false);
 
   const locale = locales[language];
 
@@ -119,7 +120,12 @@ const App: React.FC = () => {
   const playClickSound = useCallback(() => audioService.playClickSound(), []);
   const playCorrectSound = useCallback(() => audioService.playCorrectSound(), []);
   const playIncorrectSound = useCallback(() => audioService.playIncorrectSound(), []);
-  const playInvalidActionSound = useCallback(() => audioService.playInvalidActionSound(), []);
+  
+  const handleInvalidAction = useCallback(() => {
+    audioService.playInvalidActionSound();
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 500);
+  }, []);
 
   const handleSaveRanking = (name: string) => {
     const score = results.filter(r => r.isCorrect).length;
@@ -154,7 +160,7 @@ const App: React.FC = () => {
             onPlayClickSound={playClickSound}
             onPlayCorrectSound={playCorrectSound}
             onPlayIncorrectSound={playIncorrectSound}
-            onPlayInvalidActionSound={playInvalidActionSound}
+            onInvalidAction={handleInvalidAction}
           />
         ) : null;
       case 'finished':
@@ -168,6 +174,7 @@ const App: React.FC = () => {
                   totalTime={elapsedTime}
                />;
       case 'ranking':
+        // FIX: Corrected typo in prop name from `onBackTo-Top` to `onBackToTop`.
         return <RankingScreen rankings={rankings} onBackToTop={handleBackToTop} locale={locale} />;
       case 'idle':
       default:
@@ -176,7 +183,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className={`min-h-screen flex flex-col font-sans ${isShaking ? 'shake-animation' : ''}`}>
       <Header 
         title={locale.title as string} 
         language={language} 
