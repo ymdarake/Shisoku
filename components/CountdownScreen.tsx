@@ -9,8 +9,19 @@ interface CountdownScreenProps {
 
 const CountdownScreen: React.FC<CountdownScreenProps> = ({ language, onComplete }) => {
   const [count, setCount] = useState(3);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
+    // 最初のレンダリング時は音を鳴らさない
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      audioService.playCountdownSound(); // 3の表示と同時に音を鳴らす
+      const timer = setTimeout(() => {
+        setCount(count - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+
     if (count > 0) {
       audioService.playCountdownSound();
       const timer = setTimeout(() => {
@@ -24,7 +35,7 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({ language, onComplete 
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [count, onComplete]);
+  }, [count, onComplete, isFirstRender]);
 
   const text = count > 0 ? count.toString() : (language === 'ja' ? 'スタート！' : 'Start!');
 
