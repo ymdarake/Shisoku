@@ -15,7 +15,7 @@ export const locales: Locales = {
     },
     exampleTitle: '例',
     exampleLines: [
-      { label: '使う数字', value: '[8, 5, 2, 1]' },
+      { label: '使う数字', value: '8, 5, 2, 1' },
       { label: '目的の数字', value: '4' },
       { label: '解答例', value: '(8 + 2) / 5 + 1' },
     ],
@@ -67,7 +67,7 @@ export const locales: Locales = {
     },
     exampleTitle: 'Example',
     exampleLines: [
-      { label: 'Numbers to Use', value: '[8, 5, 2, 1]' },
+      { label: 'Numbers to Use', value: '8, 5, 2, 1' },
       { label: 'Target Number', value: '4' },
       { label: 'Example Answer', value: '(8 + 2) / 5 + 1' },
     ],
