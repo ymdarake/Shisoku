@@ -151,7 +151,8 @@ class AudioService {
 
   playCountdownSound() {
     if (this.isInitialized && this._isSfxOn) {
-        this.sfxSynth.triggerAttackRelease('A4', '8n');
+        const now = Tone.now();
+        this.sfxSynth.triggerAttackRelease('A4', '4n', now, 1.5);
     }
   }
 

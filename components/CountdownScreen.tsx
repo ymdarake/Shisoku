@@ -12,10 +12,10 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({ language, onComplete 
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    // 最初のレンダリング時は音を鳴らさない
+    // 最初のレンダリング時
     if (isFirstRender) {
       setIsFirstRender(false);
-      audioService.playCountdownSound(); // 3の表示と同時に音を鳴らす
+      audioService.playCountdownSound(); // 3の音を鳴らす
       const timer = setTimeout(() => {
         setCount(count - 1);
       }, 1000);
@@ -25,11 +25,15 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({ language, onComplete 
     if (count > 0) {
       audioService.playCountdownSound();
       const timer = setTimeout(() => {
+        if (count === 1) {
+          // 1の次はスタート音を鳴らしてから0にする
+          audioService.playStartSound();
+        }
         setCount(count - 1);
       }, 1000);
       return () => clearTimeout(timer);
     } else {
-      audioService.playStartSound();
+      // count=0: スタート！表示（音はcount=1のタイマーで既に鳴らした）
       const timer = setTimeout(() => {
         onComplete();
       }, 1000);
