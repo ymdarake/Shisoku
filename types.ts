@@ -15,7 +15,7 @@ export type GameState = 'idle' | 'playing' | 'finished' | 'ranking';
 export type Language = 'ja' | 'en';
 
 export interface Locale {
-  [key: string]: string | { [key: string]: string };
+  [key: string]: any;
 }
 
 export interface Locales {
