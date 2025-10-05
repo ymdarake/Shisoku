@@ -84,3 +84,15 @@ export const generateProblem = (): Problem | null => {
     // Fallback if no solution found (highly unlikely with 0-9)
     return { numbers: [1, 2, 3, 4], target: 6 }; // A known solvable problem
 };
+
+// Generate multiple problems at once
+export const generateProblems = (count: number): Problem[] => {
+    const problems: Problem[] = [];
+    for (let i = 0; i < count; i++) {
+        const problem = generateProblem();
+        if (problem) {
+            problems.push(problem);
+        }
+    }
+    return problems;
+};

@@ -148,6 +148,21 @@ class AudioService {
         this.sfxSynth.triggerAttackRelease('F#2', '16n');
     }
   }
+
+  playCountdownSound() {
+    if (this.isInitialized && this._isSfxOn) {
+        this.sfxSynth.triggerAttackRelease('A4', '8n');
+    }
+  }
+
+  playStartSound() {
+    if (this.isInitialized && this._isSfxOn) {
+      const now = Tone.now();
+      this.sfxSynth.triggerAttackRelease('C5', '8n', now);
+      this.sfxSynth.triggerAttackRelease('E5', '8n', now + 0.05);
+      this.sfxSynth.triggerAttackRelease('C6', '8n', now + 0.1);
+    }
+  }
 }
 
 export const audioService = new AudioService();

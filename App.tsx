@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { GameState, Language, Problem, GameResult, RankingEntry } from './types';
 import { locales } from './constants/locales';
-import { generateProblem } from './services/gameLogic';
+import { generateProblems } from './services/gameLogic';
 import { getRankings, saveRanking } from './services/ranking';
 import { audioService } from './services/audio';
 
 import { Header } from './components/Header';
 import { StartScreen } from './components/StartScreen';
+import CountdownScreen from './components/CountdownScreen';
 import { GameScreen } from './components/GameScreen';
 import { EndScreen } from './components/EndScreen';
 import { MessageArea } from './components/MessageArea';
@@ -27,6 +28,8 @@ const App: React.FC = () => {
   const [isBgmOn, setIsBgmOn] = useState(true);
   const [isSfxOn, setIsSfxOn] = useState(true);
   const [isShaking, setIsShaking] = useState(false);
+  const [allProblems, setAllProblems] = useState<Problem[]>([]);
+  const [showCountdown, setShowCountdown] = useState(false);
 
   const locale = locales[language];
 
@@ -52,35 +55,41 @@ const App: React.FC = () => {
     setLanguage(lang);
   };
 
-  const createNewProblem = useCallback(() => {
-    setIsLoading(true);
-    setTimeout(() => {
-        const problem = generateProblem();
-        setCurrentProblem(problem);
-        setIsLoading(false);
-    }, 100);
-  }, []);
-
   const handleStartGame = async () => {
     await audioService.init();
+    setShowCountdown(true);
+    // Generate all problems during countdown
+    setIsLoading(true);
+    setTimeout(() => {
+      const problems = generateProblems(TOTAL_QUESTIONS);
+      setAllProblems(problems);
+      setIsLoading(false);
+    }, 100);
+  };
+
+  const handleCountdownComplete = useCallback(() => {
+    setShowCountdown(false);
     audioService.playBgm();
     setCurrentQuestionIndex(0);
     setResults([]);
     setStartTime(Date.now());
     setElapsedTime(0);
     setGameState('playing');
-    createNewProblem();
-  };
+    if (allProblems.length > 0) {
+      setCurrentProblem(allProblems[0]);
+    }
+  }, [allProblems]);
 
   const handleNextQuestion = useCallback(() => {
     if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-      createNewProblem();
+      const nextIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(nextIndex);
+      setCurrentProblem(allProblems[nextIndex]);
     } else {
       setGameState('finished');
       audioService.stopBgm();
     }
-  }, [currentQuestionIndex, createNewProblem]);
+  }, [currentQuestionIndex, allProblems]);
 
   const handleCorrect = (userAnswer: string) => {
     if (!currentProblem) return;
@@ -141,6 +150,15 @@ const App: React.FC = () => {
   };
 
   const renderContent = () => {
+    if (showCountdown) {
+      return (
+        <CountdownScreen
+          language={language}
+          onComplete={handleCountdownComplete}
+        />
+      );
+    }
+
     if (isLoading) {
         return <MessageArea message={locale.generatingProblem as string} type="loading" />;
     }
