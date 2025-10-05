@@ -21,6 +21,12 @@ interface GameScreenProps {
   onPlayIncorrectSound: () => void;
 }
 
+interface Token {
+  value: string;
+  type: 'number' | 'operator';
+  originalIndex?: number;
+}
+
 const formatTime = (totalSeconds: number) => {
   const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
   const seconds = (totalSeconds % 60).toString().padStart(2, '0');
@@ -28,15 +34,16 @@ const formatTime = (totalSeconds: number) => {
 };
 
 export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound }) => {
-  const [expression, setExpression] = useState('');
-  const [usedNumberIndices, setUsedNumberIndices] = useState<number[]>([]);
+  const [tokens, setTokens] = useState<Token[]>([]);
   const [message, setMessage] = useState(locale.buildExpression);
   const [messageType, setMessageType] = useState<'info' | 'success' | 'error'>('info');
   const [isJudged, setIsJudged] = useState(false);
 
+  const expression = tokens.map(t => t.value).join(' ');
+  const usedNumberIndices = tokens.filter(t => t.type === 'number').map(t => t.originalIndex!);
+
   const resetForNewProblem = useCallback(() => {
-    setExpression('');
-    setUsedNumberIndices([]);
+    setTokens([]);
     setMessage(locale.buildExpression);
     setMessageType('info');
     setIsJudged(false);
@@ -48,51 +55,77 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
   
   const handleNumberClick = (num: number, index: number) => {
     if (isJudged) return;
-    setExpression(prev => prev + num);
-    setUsedNumberIndices(prev => [...prev, index]);
+
+    const lastToken = tokens.length > 0 ? tokens[tokens.length - 1] : null;
+    // Prevent number after number e.g. "1 2"
+    // Prevent number after closing parenthesis e.g. ") 2"
+    if (lastToken && (lastToken.type === 'number' || lastToken.value === ')')) {
+      return;
+    }
+    
+    setTokens(prev => [...prev, { value: String(num), type: 'number', originalIndex: index }]);
   };
   
   const handleOperatorClick = (op: string) => {
     if (isJudged) return;
-    setExpression(prev => `${prev} ${op} `);
+
+    const lastToken = tokens.length > 0 ? tokens[tokens.length - 1] : null;
+
+    switch (op) {
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+        // Operator must follow a number or a closing parenthesis
+        if (!lastToken || (lastToken.type !== 'number' && lastToken.value !== ')')) {
+          return;
+        }
+        break;
+      case '(':
+        // Opening parenthesis must NOT follow a number or a closing parenthesis
+        if (lastToken && (lastToken.type === 'number' || lastToken.value === ')')) {
+            return;
+        }
+        break;
+      case ')':
+        // Closing parenthesis must follow a number or another closing parenthesis
+        if (!lastToken || (lastToken.type !== 'number' && lastToken.value !== ')')) {
+          return;
+        }
+        // Check for parenthesis balance
+        const openParenCount = tokens.filter(t => t.value === '(').length;
+        const closeParenCount = tokens.filter(t => t.value === ')').length;
+        if (closeParenCount >= openParenCount) {
+          return;
+        }
+        break;
+    }
+    
+    setTokens(prev => [...prev, { value: op, type: 'operator' }]);
   };
   
   const handleClear = () => {
     if (isJudged) return;
-    setExpression('');
-    setUsedNumberIndices([]);
+    setTokens([]);
   };
 
   const handleBackspace = () => {
     if (isJudged) return;
-    const lastPart = expression.trim().split(' ').pop();
-    if(lastPart && /^\d+$/.test(lastPart)) {
-        const lastNum = parseInt(lastPart, 10);
-        const lastNumIndex = usedNumberIndices.find(idx => problem.numbers[idx] === lastNum && !usedNumberIndices.slice(0, -1).includes(idx));
-        
-        const indexToRemove = usedNumberIndices.lastIndexOf(
-            problem.numbers.findIndex((n, i) => n === lastNum && !usedNumberIndices.slice(0, usedNumberIndices.length-1).includes(i))
-        );
-
-        if (indexToRemove !== -1) {
-             const newUsedIndices = [...usedNumberIndices];
-             newUsedIndices.splice(indexToRemove, 1);
-             setUsedNumberIndices(newUsedIndices);
-        }
-    }
-    setExpression(prev => prev.trim().slice(0, prev.trim().lastIndexOf(' ')).trim());
+    setTokens(prev => prev.slice(0, -1));
   };
 
 
   const checkAnswer = useCallback(() => {
-    const usedDigits = expression.match(/\d+/g)?.map(Number) || [];
-    const problemDigits = [...problem.numbers].sort();
+    // Only check when all 4 numbers are used
+    if (usedNumberIndices.length !== 4) return;
     
-    if (usedDigits.length !== 4) return;
-    if (usedDigits.sort().join('') !== problemDigits.join('')) return;
+    // Also, must not end with an operator (unless it's a parenthesis)
+    const lastToken = tokens.length > 0 ? tokens[tokens.length - 1] : null;
+    if (lastToken && lastToken.type === 'operator' && lastToken.value !== ')') return;
 
-    const openParen = (expression.match(/\(/g) || []).length;
-    const closeParen = (expression.match(/\)/g) || []).length;
+    // Check parenthesis balance
+    const openParen = tokens.filter(t => t.value === '(').length;
+    const closeParen = tokens.filter(t => t.value === ')').length;
     if (openParen !== closeParen) return;
     
     setIsJudged(true);
@@ -109,13 +142,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
       onPlayIncorrectSound();
       setTimeout(() => onIncorrect(expression), 2000);
     }
-  }, [expression, problem, locale, onCorrect, onIncorrect, onPlayCorrectSound, onPlayIncorrectSound]);
+  }, [tokens, expression, problem, locale, onCorrect, onIncorrect, onPlayCorrectSound, onPlayIncorrectSound, usedNumberIndices.length]);
 
   useEffect(() => {
     if (!isJudged) {
         checkAnswer();
     }
-  }, [expression, isJudged, checkAnswer]);
+  }, [tokens, isJudged, checkAnswer]);
   
   const handleSkipClick = () => {
       onPlayClickSound();
