@@ -3,6 +3,7 @@ import type { GameState, Language, Problem, GameResult, RankingEntry } from './t
 import { locales } from './constants/locales';
 import { generateProblem } from './services/gameLogic';
 import { getRankings, saveRanking } from './services/ranking';
+import { audioService } from './services/audio';
 
 import { Header } from './components/Header';
 import { StartScreen } from './components/StartScreen';
@@ -23,6 +24,8 @@ const App: React.FC = () => {
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [rankings, setRankings] = useState<RankingEntry[]>([]);
+  const [isBgmOn, setIsBgmOn] = useState(true);
+  const [isSfxOn, setIsSfxOn] = useState(true);
 
   const locale = locales[language];
 
@@ -57,7 +60,9 @@ const App: React.FC = () => {
     }, 100);
   }, []);
 
-  const handleStartGame = () => {
+  const handleStartGame = async () => {
+    await audioService.init();
+    audioService.playBgm();
     setCurrentQuestionIndex(0);
     setResults([]);
     setStartTime(Date.now());
@@ -72,6 +77,7 @@ const App: React.FC = () => {
       createNewProblem();
     } else {
       setGameState('finished');
+      audioService.stopBgm();
     }
   }, [currentQuestionIndex, createNewProblem]);
 
@@ -95,11 +101,24 @@ const App: React.FC = () => {
   
   const handleBackToTop = () => {
     setGameState('idle');
+    audioService.stopBgm();
   };
 
   const handleShowRanking = () => {
     setGameState('ranking');
   };
+  
+  const handleToggleBgm = () => {
+      setIsBgmOn(audioService.toggleBgm());
+  }
+  
+  const handleToggleSfx = () => {
+      setIsSfxOn(audioService.toggleSfx());
+  }
+  
+  const playClickSound = useCallback(() => audioService.playClickSound(), []);
+  const playCorrectSound = useCallback(() => audioService.playCorrectSound(), []);
+  const playIncorrectSound = useCallback(() => audioService.playIncorrectSound(), []);
 
   const handleSaveRanking = (name: string) => {
     const score = results.filter(r => r.isCorrect).length;
@@ -131,6 +150,9 @@ const App: React.FC = () => {
             questionNumber={currentQuestionIndex + 1}
             totalQuestions={TOTAL_QUESTIONS}
             elapsedTime={elapsedTime}
+            onPlayClickSound={playClickSound}
+            onPlayCorrectSound={playCorrectSound}
+            onPlayIncorrectSound={playIncorrectSound}
           />
         ) : null;
       case 'finished':
@@ -158,6 +180,11 @@ const App: React.FC = () => {
         language={language} 
         onLanguageChange={handleLanguageChange}
         languageLabel={locale.language as string}
+        isBgmOn={isBgmOn}
+        isSfxOn={isSfxOn}
+        onToggleBgm={handleToggleBgm}
+        onToggleSfx={handleToggleSfx}
+        locale={locale}
       />
       <main className="flex-grow container mx-auto p-4">
         {renderContent()}

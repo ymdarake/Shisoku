@@ -41,6 +41,10 @@ export const locales: Locales = {
     date: '日付',
     noRankings: 'まだランキングがありません。一番乗りを目指そう！',
     backToMenu: 'メニューに戻る',
+    bgmOn: 'BGM ON',
+    bgmOff: 'BGM OFF',
+    sfxOn: '効果音 ON',
+    sfxOff: '効果音 OFF',
   },
   en: {
     title: 'Math Puzzle Game',
@@ -82,5 +86,9 @@ export const locales: Locales = {
     date: 'Date',
     noRankings: 'No rankings yet. Be the first!',
     backToMenu: 'Back to Menu',
+    bgmOn: 'BGM ON',
+    bgmOff: 'BGM OFF',
+    sfxOn: 'SFX ON',
+    sfxOff: 'SFX OFF',
   },
 };

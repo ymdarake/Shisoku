@@ -16,6 +16,9 @@ interface GameScreenProps {
   questionNumber: number;
   totalQuestions: number;
   elapsedTime: number;
+  onPlayClickSound: () => void;
+  onPlayCorrectSound: () => void;
+  onPlayIncorrectSound: () => void;
 }
 
 const formatTime = (totalSeconds: number) => {
@@ -24,7 +27,7 @@ const formatTime = (totalSeconds: number) => {
   return `${minutes}:${seconds}`;
 };
 
-export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime }) => {
+export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound }) => {
   const [expression, setExpression] = useState('');
   const [usedNumberIndices, setUsedNumberIndices] = useState<number[]>([]);
   const [message, setMessage] = useState(locale.buildExpression);
@@ -98,19 +101,26 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
     if (result === problem.target) {
       setMessage(locale.correct);
       setMessageType('success');
+      onPlayCorrectSound();
       setTimeout(() => onCorrect(expression), 2000);
     } else {
       setMessage(result === null ? locale.invalidExpression : locale.incorrect);
       setMessageType('error');
+      onPlayIncorrectSound();
       setTimeout(() => onIncorrect(expression), 2000);
     }
-  }, [expression, problem, locale, onCorrect, onIncorrect]);
+  }, [expression, problem, locale, onCorrect, onIncorrect, onPlayCorrectSound, onPlayIncorrectSound]);
 
   useEffect(() => {
     if (!isJudged) {
         checkAnswer();
     }
   }, [expression, isJudged, checkAnswer]);
+  
+  const handleSkipClick = () => {
+      onPlayClickSound();
+      onSkip();
+  }
 
   return (
     <div className="p-4 flex flex-col items-center">
@@ -133,9 +143,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
         onOperatorClick={handleOperatorClick}
         onClear={handleClear}
         onBackspace={handleBackspace}
+        onPlayClickSound={onPlayClickSound}
       />
       <div className="mt-4">
-        <button onClick={onSkip} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">
+        <button onClick={handleSkipClick} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">
           {locale.skip}
         </button>
       </div>
