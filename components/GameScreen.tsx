@@ -155,7 +155,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
       onPlayCorrectSound();
       setTimeout(() => onCorrect(expression), 2000);
     } else {
-      setMessage(result === null ? locale.invalidExpression : locale.incorrect);
+      setMessage(locale.incorrect);
       setMessageType('error');
       onPlayIncorrectSound();
       setTimeout(() => onIncorrect(expression), 2000);
