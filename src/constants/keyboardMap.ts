@@ -23,8 +23,13 @@ export function isNumberKey(key: string): boolean {
 
 export function toOperator(key: string, shiftKey: boolean): string | null {
   if (OPERATOR_KEYS.has(key)) return key;
-  // US配列想定: Shift+8 => '*'
-  if (key === '8' && shiftKey) return '*';
+  // Shift + number key combinations
+  if (key === '8' && shiftKey) return '*';  // Shift+8 => '*'
+  if (key === '9' && shiftKey) return '(';  // Shift+9 => '('
+  if (key === '0' && shiftKey) return ')';  // Shift+0 => ')'
+  // Direct parenthesis characters (when browser sends the actual character)
+  if (key === '(') return '(';
+  if (key === ')') return ')';
   return null;
 }
 

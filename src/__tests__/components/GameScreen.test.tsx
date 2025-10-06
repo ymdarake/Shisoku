@@ -67,6 +67,31 @@ describe('GameScreen - keyboard number input (Phase 1 - Red)', () => {
     const display = screen.getByTestId('input-display');
     expect(display).toHaveTextContent('2 *');
   });
+
+  it('pressing ( key should input opening parenthesis', async () => {
+    render(<GameScreen {...baseProps} />);
+
+    // userEvent sends the actual character '(' when Shift+9 is pressed
+    await userEvent.keyboard('(');
+
+    const display = screen.getByTestId('input-display');
+    expect(display).toHaveTextContent('(');
+  });
+
+  it('pressing ) key should input closing parenthesis after a number', async () => {
+    render(<GameScreen {...baseProps} />);
+
+    // Build expression with opening parenthesis first: ( 1 + 2 )
+    await userEvent.keyboard('(');
+    await userEvent.keyboard('1');
+    await userEvent.keyboard('+');
+    await userEvent.keyboard('2');
+    // userEvent sends the actual character ')' when Shift+0 is pressed
+    await userEvent.keyboard(')');
+
+    const display = screen.getByTestId('input-display');
+    expect(display).toHaveTextContent('( 1 + 2 )');
+  });
 });
 
 describe('GameScreen - special keys (Phase 3 - Red)', () => {
