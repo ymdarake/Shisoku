@@ -54,7 +54,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
   useEffect(() => {
     resetForNewProblem();
   }, [problem, resetForNewProblem]);
-  
+
   const handleNumberClick = (num: number, index: number) => {
     if (isJudged) return;
 
@@ -65,11 +65,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
       onInvalidAction();
       return;
     }
-    
+
     onPlayClickSound();
     setTokens(prev => [...prev, { value: String(num), type: 'number', originalIndex: index }]);
   };
-  
+
   const handleOperatorClick = (op: string) => {
     if (isJudged) return;
 
@@ -89,8 +89,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
       case '(':
         // Opening parenthesis must NOT follow a number or a closing parenthesis
         if (lastToken && (lastToken.type === 'number' || lastToken.value === ')')) {
-            onInvalidAction();
-            return;
+          onInvalidAction();
+          return;
         }
         break;
       case ')':
@@ -108,11 +108,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
         }
         break;
     }
-    
+
     onPlayClickSound();
     setTokens(prev => [...prev, { value: op, type: 'operator' }]);
   };
-  
+
   const handleClear = () => {
     if (isJudged) return;
     if (tokens.length > 0) {
@@ -137,7 +137,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
   const checkAnswer = useCallback(() => {
     // Only check when all 4 numbers are used
     if (usedNumberIndices.length !== 4) return;
-    
+
     // Also, must not end with an operator (unless it's a parenthesis)
     const lastToken = tokens.length > 0 ? tokens[tokens.length - 1] : null;
     if (lastToken && lastToken.type === 'operator' && lastToken.value !== ')') return;
@@ -146,7 +146,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
     const openParen = tokens.filter(t => t.value === '(').length;
     const closeParen = tokens.filter(t => t.value === ')').length;
     if (openParen !== closeParen) return;
-    
+
     setIsJudged(true);
     const result = safeEvaluateExpression(expression);
 
@@ -165,7 +165,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
 
   useEffect(() => {
     if (!isJudged) {
-        checkAnswer();
+      checkAnswer();
     }
   }, [tokens, isJudged, checkAnswer]);
 
@@ -175,10 +175,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
   }, []);
 
   useKeyboardInput(handleKeyDown);
-  
+
   const handleSkipClick = () => {
-      onPlayClickSound();
-      onSkip();
+    onPlayClickSound();
+    onSkip();
   }
 
   return (
