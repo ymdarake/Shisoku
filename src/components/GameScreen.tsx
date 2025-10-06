@@ -174,8 +174,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
   }
 
   return (
-    <div className="p-4 flex flex-col items-center">
-       <div className="w-full max-w-md mx-auto flex justify-between items-center mb-2 font-bold text-lg">
+    <div className="p-4 flex flex-col items-center min-h-[calc(100vh-80px)]">
+      {/* ヘッダー: 問題番号とタイマー */}
+      <div className="w-full max-w-4xl mx-auto flex justify-between items-center mb-4 font-bold text-lg">
         <span>{`${locale.question} ${questionNumber}/${totalQuestions}`}</span>
         <div className="flex items-center space-x-2 text-indigo-500 dark:text-indigo-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -184,21 +185,32 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
           <span>{formatTime(elapsedTime)}</span>
         </div>
       </div>
-      <ProblemDisplay problem={problem} locale={locale} />
-      <InputDisplay expression={expression} />
-      <MessageArea message={message} type={messageType} />
-      <Controls 
-        numbers={problem.numbers}
-        usedNumberIndices={usedNumberIndices}
-        onNumberClick={handleNumberClick}
-        onOperatorClick={handleOperatorClick}
-        onClear={handleClear}
-        onBackspace={handleBackspace}
-      />
-      <div className="mt-4">
-        <button onClick={handleSkipClick} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">
-          {locale.skip}
-        </button>
+
+      {/* メインコンテンツ: PC時は横並び、モバイル時は縦積み */}
+      <div className="w-full max-w-4xl mx-auto flex flex-col lg:flex-row lg:gap-8 gap-4">
+        {/* 左側: 問題表示エリア */}
+        <div className="flex-1 flex flex-col items-center justify-center lg:border-r lg:border-gray-300 dark:lg:border-gray-700 lg:pr-8">
+          <ProblemDisplay problem={problem} locale={locale} />
+        </div>
+
+        {/* 右側: 入力エリアとコントロール */}
+        <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+          <MessageArea message={message} type={messageType} />
+          <InputDisplay expression={expression} />
+          <Controls
+            numbers={problem.numbers}
+            usedNumberIndices={usedNumberIndices}
+            onNumberClick={handleNumberClick}
+            onOperatorClick={handleOperatorClick}
+            onClear={handleClear}
+            onBackspace={handleBackspace}
+          />
+          <div className="mt-4">
+            <button onClick={handleSkipClick} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">
+              {locale.skip}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
