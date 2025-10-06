@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "coverage:md": "node ./scripts/coverage-to-markdown.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",
