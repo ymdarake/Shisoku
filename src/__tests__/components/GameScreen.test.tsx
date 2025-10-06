@@ -189,4 +189,48 @@ describe('GameScreen - special keys (Phase 3 - Red)', () => {
   });
 });
 
+describe('GameScreen - accessibility (Phase 4)', () => {
+  const baseProps = {
+    problem: { numbers: [1, 2, 3, 4], target: 6 },
+    onCorrect: vi.fn(),
+    onIncorrect: vi.fn(),
+    onSkip: vi.fn(),
+    locale: {
+      buildExpression: '式を作ってください',
+      correct: '正解！',
+      incorrect: '不正解',
+      question: '問題',
+      skip: 'スキップ',
+    },
+    questionNumber: 1,
+    totalQuestions: 10,
+    elapsedTime: 0,
+    onPlayClickSound: vi.fn(),
+    onPlayCorrectSound: vi.fn(),
+    onPlayIncorrectSound: vi.fn(),
+    onInvalidAction: vi.fn(),
+  } as const;
+
+  it('should have main game area with proper ARIA role', () => {
+    render(<GameScreen {...baseProps} />);
+
+    const mainArea = screen.getByRole('main');
+    expect(mainArea).toBeInTheDocument();
+  });
+
+  it('should have input display with aria-live for screen readers', () => {
+    render(<GameScreen {...baseProps} />);
+
+    const display = screen.getByTestId('input-display');
+    expect(display).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('should have skip button accessible via keyboard', () => {
+    render(<GameScreen {...baseProps} />);
+
+    const skipButton = screen.getByRole('button', { name: /スキップ/i });
+    expect(skipButton).toBeInTheDocument();
+  });
+});
+
 

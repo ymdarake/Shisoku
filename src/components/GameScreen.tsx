@@ -220,15 +220,17 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
   }
 
   return (
-    <div className="p-4 flex flex-col items-center min-h-[calc(100vh-80px)]">
+    <main className="p-4 flex flex-col items-center min-h-[calc(100vh-80px)]" role="main">
       {/* ヘッダー: 問題番号とタイマー */}
       <div className="w-full max-w-4xl mx-auto flex justify-between items-center mb-4 font-bold text-lg">
-        <span>{`${locale.question} ${questionNumber}/${totalQuestions}`}</span>
+        <span aria-label={`問題 ${questionNumber} / ${totalQuestions}`}>
+          {`${locale.question} ${questionNumber}/${totalQuestions}`}
+        </span>
         <div className="flex items-center space-x-2 text-indigo-500 dark:text-indigo-400">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clipRule="evenodd" />
           </svg>
-          <span>{formatTime(elapsedTime)}</span>
+          <span aria-label={`経過時間 ${formatTime(elapsedTime)}`}>{formatTime(elapsedTime)}</span>
         </div>
       </div>
 
@@ -258,6 +260,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
