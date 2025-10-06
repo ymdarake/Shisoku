@@ -50,19 +50,19 @@ AC
 
 ### 1.4 Phase 3: 特殊キー（2日目午前）
 1) テスト
-- [ ] Backspace で最後の入力を削除
-- [ ] Enter で判定実行（全数字使用時のみ）
-- [ ] Escape でクリア
+- [x] Backspace で最後の入力を削除
+- [x] Enter で判定実行（全数字使用時のみ）
+- [x] Escape でクリア
 
 2) 実装
-- [ ] `useKeyboardInput` に特殊キーのハンドラを追加
-- [ ] `GameScreen.tsx` へフックを適用
+- [x] `useKeyboardInput` に特殊キーのハンドラを追加
+- [x] `GameScreen.tsx` へフックを適用
 
 3) リファクタ
-- [ ] 条件分岐の簡素化、早期 return で可読性向上
+- [x] 条件分岐の簡素化、早期 return で可読性向上
 
 AC
-- [ ] Backspace/Enter/Escape が UI ボタンと等価に作用
+- [x] Backspace/Enter/Escape が UI ボタンと等価に作用
 
 ### 1.5 Phase 4: アクセシビリティ（2日目午後）
 1) テスト

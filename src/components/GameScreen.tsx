@@ -170,25 +170,47 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
     }
   }, [tokens, isJudged, checkAnswer]);
 
-  // 数字キー入力のみ対応（Phase 1 の最小実装）
+  // キーボード入力ハンドラ（数字・演算子・特殊キー対応）
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (isJudged) return;
+
     const key = e.key;
+
+    // 特殊キー: Backspace（削除）, Enter（判定）, Escape（クリア）
+    if (key === 'Backspace') {
+      e.preventDefault();
+      handleBackspace();
+      return;
+    }
+    if (key === 'Enter') {
+      e.preventDefault();
+      checkAnswer();
+      return;
+    }
+    if (key === 'Escape') {
+      e.preventDefault();
+      handleClear();
+      return;
+    }
+
+    // 数字キー（0-9）
     if (isNumberKey(key)) {
       const num = Number(key);
-      // 未使用の同値数字インデックスを探索
-      const candidateIndex = problem.numbers.findIndex((n, idx) => n === num && !usedNumberIndices.includes(idx));
+      const candidateIndex = problem.numbers.findIndex(
+        (n, idx) => n === num && !usedNumberIndices.includes(idx)
+      );
       if (candidateIndex !== -1) {
         handleNumberClick(num, candidateIndex);
       }
       return;
     }
+
+    // 演算子キー（+ - * /）と括弧
     const op = toOperator(key, e.shiftKey);
     if (op) {
       handleOperatorClick(op);
-      return;
     }
-  }, [isJudged, problem.numbers, usedNumberIndices, handleNumberClick]);
+  }, [isJudged, problem.numbers, usedNumberIndices, handleNumberClick, handleBackspace, checkAnswer, handleClear, handleOperatorClick]);
 
   useKeyboardInput(handleKeyDown);
 
