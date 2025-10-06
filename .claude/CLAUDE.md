@@ -30,35 +30,36 @@ npm install
 
 ```
 /
-├── components/      # UIコンポーネント（12ファイル）
-│   ├── StartScreen.tsx
-│   ├── CountdownScreen.tsx  # NEW: カウントダウン画面
-│   ├── GameScreen.tsx
-│   ├── EndScreen.tsx
-│   ├── RankingScreen.tsx
-│   ├── Header.tsx
-│   ├── Controls.tsx
-│   ├── InputDisplay.tsx
-│   ├── ProblemDisplay.tsx
-│   ├── MessageArea.tsx
-│   ├── Rules.tsx
-│   └── icons.tsx
-├── services/        # ビジネスロジック
-│   ├── gameLogic.ts    # 問題生成・式評価
-│   ├── audio.ts        # Tone.js音声システム
-│   └── ranking.ts      # localStorage永続化
-├── constants/
-│   └── locales.ts      # 多言語テキスト定義
-├── App.tsx             # ルートコンポーネント・状態管理
-├── index.tsx           # エントリーポイント
-├── index.css           # NEW: Tailwindディレクティブとカスタムスタイル
-├── types.ts            # TypeScript型定義
-├── postcss.config.js   # NEW: PostCSS設定
-├── tailwind.config.js  # NEW: Tailwind CSS設定
-└── index.html          # HTML
+├── src/
+│   ├── components/      # UIコンポーネント（12ファイル）
+│   │   ├── StartScreen.tsx
+│   │   ├── CountdownScreen.tsx  # カウントダウン画面
+│   │   ├── GameScreen.tsx
+│   │   ├── EndScreen.tsx
+│   │   ├── RankingScreen.tsx
+│   │   ├── Header.tsx
+│   │   ├── Controls.tsx
+│   │   ├── InputDisplay.tsx
+│   │   ├── ProblemDisplay.tsx
+│   │   ├── MessageArea.tsx
+│   │   ├── Rules.tsx
+│   │   └── icons.tsx
+│   ├── services/        # ビジネスロジック
+│   │   ├── gameLogic.ts    # 問題生成・式評価
+│   │   ├── audio.ts        # Tone.js音声システム
+│   │   └── ranking.ts      # localStorage永続化
+│   ├── constants/
+│   │   └── locales.ts      # 多言語テキスト定義
+│   ├── styles/
+│   │   └── index.css       # Tailwindディレクティブとカスタムスタイル
+│   ├── App.tsx             # ルートコンポーネント・状態管理
+│   ├── index.tsx           # エントリーポイント
+│   └── types.ts            # TypeScript型定義
+├── docs/                   # ドキュメント
+├── postcss.config.js       # PostCSS設定
+├── tailwind.config.js      # Tailwind CSS設定
+└── index.html              # HTML
 ```
-
-**重要**: `src/` ディレクトリは存在せず、ルート直下に配置
 
 ### 主要な設計パターン
 
