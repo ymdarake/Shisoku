@@ -126,20 +126,20 @@ npm install -D vitest @vitest/ui @testing-library/react @testing-library/jest-do
 ```
 
 ### 2.2 ユニットテスト
-- [ ] `src/__tests__/services/gameLogic.test.ts`
+- [x] `src/__tests__/services/gameLogic.test.ts`
   - `generateProblem()` の正常系/境界値
   - `safeEvaluateExpression()` の妥当性/エラーケース
-- [ ] `src/__tests__/services/ranking.test.ts`
+- [x] `src/__tests__/services/ranking.test.ts`
   - `saveRanking()`/`getRankings()`、`localStorage` モック
 
 ### 2.3 コンポーネントテスト
-- [ ] `ProblemDisplay.test.tsx`
-- [ ] `InputDisplay.test.tsx`
-- [ ] `Controls.test.tsx`
+- [x] `ProblemDisplay.test.tsx`
+- [x] `InputDisplay.test.tsx`
+- [x] `Controls.test.tsx`
 
 AC / DoD
-- [ ] `npm run test:coverage` で主要ロジック 80%+ を達成
-- [ ] 失敗テストが 0 で安定実行
+- [x] `npm run test:coverage` で主要ロジック 80%+ を達成
+- [x] 失敗テストが 0 で安定実行
 
 ---
 
