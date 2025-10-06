@@ -17,7 +17,7 @@
 1) テスト作成（Red）
 - [x] `src/__tests__/components/GameScreen.test.tsx` を新規作成
 - [x] ケース: 数字キー 0-9 押下で `InputDisplay` に反映される（現状は代表値で検証）
-- [ ] ケース: 使用済み数字は再入力不可（`disabled`/無視）
+- [x] ケース: 使用済み数字は再入力不可（`disabled`/無視）
 
 2) 実装（Green）
 - [x] `GameScreen.tsx` に `useEffect` で `window.addEventListener('keydown', ...)` を追加
