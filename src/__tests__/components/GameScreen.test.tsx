@@ -33,6 +33,20 @@ describe('GameScreen - keyboard number input (Phase 1 - Red)', () => {
     const display = screen.getByTestId('input-display');
     expect(display).toHaveTextContent('1');
   });
+
+  it('pressing the same number twice should not add a used number again', async () => {
+    render(<GameScreen {...baseProps} />);
+
+    await userEvent.keyboard('1');
+    await userEvent.keyboard('1');
+
+    const display = screen.getByTestId('input-display');
+    expect(display).toHaveTextContent(/^1$/);
+
+    // The corresponding number button for 1 should be disabled
+    const oneButton = screen.getByRole('button', { name: '1' });
+    expect(oneButton).toBeDisabled();
+  });
 });
 
 
