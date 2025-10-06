@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Problem } from '../types';
 import { safeEvaluateExpression } from '../services/gameLogic';
+import { useKeyboardInput } from '../hooks/useKeyboardInput';
 
 import { ProblemDisplay } from './ProblemDisplay';
 import { InputDisplay } from './InputDisplay';
@@ -167,6 +168,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
         checkAnswer();
     }
   }, [tokens, isJudged, checkAnswer]);
+
+  // no-op: 次ステップでキーボード入力を実装
+  const handleKeyDown = useCallback((_e: KeyboardEvent) => {
+    // ここでは何もしない（配線のみ）
+  }, []);
+
+  useKeyboardInput(handleKeyDown);
   
   const handleSkipClick = () => {
       onPlayClickSound();
