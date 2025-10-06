@@ -5,6 +5,7 @@ const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
 const lcovPath = path.join(workspace, 'coverage', 'lcov.info');
 const outputPath = path.join(workspace, 'code-coverage-results.md');
 
+
 function parseLcov(lcovContent) {
     const files = [];
     let current = null;
