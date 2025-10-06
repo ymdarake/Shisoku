@@ -32,11 +32,3 @@ jobs:
 
       - name: Run tests with coverage
         run: npm test -- --coverage --run
-
-      - name: Upload coverage reports to Codecov (optional)
-        if: success()
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/coverage-final.json
-          fail_ci_if_error: false
-        continue-on-error: true
