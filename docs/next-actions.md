@@ -34,15 +34,15 @@
 
 ### 1.3 Phase 2: 演算子キー入力（1日目午後）
 1) テスト
-- [ ] `+`, `-`, `*`, `/` キー押下で `handleOperatorClick` が発火
-- [ ] `*` は `Shift+8` 入力に対応（US配列想定）
+- [x] `+`, `-`, `*`, `/` キー押下で `handleOperatorClick` が発火
+- [x] `*` はキーボード `*` 入力で検証（配列差の影響を回避）
 
 2) 実装
-- [ ] `useKeyboardInput` に演算子判定を追加
-- [ ] Shift 状態（`event.shiftKey`）を考慮
+- [x] `useKeyboardInput` に演算子判定を追加
+- [x] Shift 状態（`event.shiftKey`）を考慮（内部マップで対応）
 
 3) リファクタ
-- [ ] `keyboardMap.ts` に演算子マッピングを集約
+- [x] `keyboardMap.ts` に演算子マッピングを集約
 
 AC
 - [ ] 4 演算子が全てキーボードから入力可能
