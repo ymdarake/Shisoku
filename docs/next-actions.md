@@ -11,7 +11,7 @@
 ### 1.1 セットアップ（共通下準備）
 - [x] `src/hooks` ディレクトリがなければ作成
 - [x] `src/constants` に `keyboardMap.ts` を作成
-- [ ] 既存の `src/components/GameScreen.tsx` の読み取り（イベント接続ポイントの確認）
+- [x] 既存の `src/components/GameScreen.tsx` の読み取り（イベント接続ポイントの確認）
 
 ### 1.2 Phase 1: 数字キー入力（1日目午前）
 1) テスト作成（Red）
