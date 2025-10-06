@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { Problem } from '../types';
 import { safeEvaluateExpression } from '../services/gameLogic';
 import { useKeyboardInput } from '../hooks/useKeyboardInput';
-import { isNumberKey } from '../constants/keyboardMap';
+import { isNumberKey, toOperator } from '../constants/keyboardMap';
 
 import { ProblemDisplay } from './ProblemDisplay';
 import { InputDisplay } from './InputDisplay';
@@ -181,6 +181,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
       if (candidateIndex !== -1) {
         handleNumberClick(num, candidateIndex);
       }
+      return;
+    }
+    const op = toOperator(key, e.shiftKey);
+    if (op) {
+      handleOperatorClick(op);
+      return;
     }
   }, [isJudged, problem.numbers, usedNumberIndices, handleNumberClick]);
 

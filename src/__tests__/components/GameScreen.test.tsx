@@ -47,6 +47,26 @@ describe('GameScreen - keyboard number input (Phase 1 - Red)', () => {
     const oneButton = screen.getByRole('button', { name: '1' });
     expect(oneButton).toBeDisabled();
   });
+
+  it('pressing operator + after a number should append operator to expression', async () => {
+    render(<GameScreen {...baseProps} />);
+
+    await userEvent.keyboard('1');
+    await userEvent.keyboard('+');
+
+    const display = screen.getByTestId('input-display');
+    expect(display).toHaveTextContent('1 +');
+  });
+
+  it('pressing * should input * operator after a number', async () => {
+    render(<GameScreen {...baseProps} />);
+
+    await userEvent.keyboard('2');
+    await userEvent.keyboard('*');
+
+    const display = screen.getByTestId('input-display');
+    expect(display).toHaveTextContent('2 *');
+  });
 });
 
 
