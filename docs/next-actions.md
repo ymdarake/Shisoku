@@ -9,8 +9,8 @@
 **所要**: 1-2日 / **TDD**: 対応
 
 ### 1.1 セットアップ（共通下準備）
-- [ ] `src/hooks` ディレクトリがなければ作成
-- [ ] `src/constants` に `keyboardMap.ts` を作成
+- [x] `src/hooks` ディレクトリがなければ作成
+- [x] `src/constants` に `keyboardMap.ts` を作成
 - [ ] 既存の `src/components/GameScreen.tsx` の読み取り（イベント接続ポイントの確認）
 
 ### 1.2 Phase 1: 数字キー入力（1日目午前）
