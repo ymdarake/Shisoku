@@ -15,18 +15,18 @@
 
 ### 1.2 Phase 1: 数字キー入力（1日目午前）
 1) テスト作成（Red）
-- [ ] `src/__tests__/components/GameScreen.test.tsx` を新規作成
-- [ ] ケース: 数字キー 0-9 押下で `InputDisplay` に反映される
+- [x] `src/__tests__/components/GameScreen.test.tsx` を新規作成
+- [x] ケース: 数字キー 0-9 押下で `InputDisplay` に反映される（現状は代表値で検証）
 - [ ] ケース: 使用済み数字は再入力不可（`disabled`/無視）
 
 2) 実装（Green）
-- [ ] `GameScreen.tsx` に `useEffect` で `window.addEventListener('keydown', ...)` を追加
-- [ ] キーコード（`Digit0`-`Digit9`）/ `event.key` を判定
-- [ ] 既存の `handleNumberClick`（または等価の挙動）を呼ぶ
+- [x] `GameScreen.tsx` に `useEffect` で `window.addEventListener('keydown', ...)` を追加
+- [x] キーコード（`Digit0`-`Digit9`）/ `event.key` を判定
+- [x] 既存の `handleNumberClick`（または等価の挙動）を呼ぶ
 
 3) リファクタ（Refactor）
-- [ ] `src/hooks/useKeyboardInput.ts` を作成してロジックを抽出
-- [ ] `keyboardMap.ts` にキー定義（数字/演算子/特殊）を定数化
+- [x] `src/hooks/useKeyboardInput.ts` を作成してロジックを抽出
+- [x] `keyboardMap.ts` にキー定義（数字/演算子/特殊）を定数化
 
 受け入れ条件（AC）
 - [ ] 物理キーボードの 0-9 による入力がマウス操作と等価に機能
@@ -108,13 +108,13 @@ Definition of Done（DoD）
 **所要**: 2-3日 / **前提**: なし
 
 ### 2.1 依存追加・設定
-- [ ] 依存を追加
+- [x] 依存を追加
 ```bash
 npm install -D vitest @vitest/ui @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
 ```
-- [ ] `vitest.config.ts` をプロジェクトルートに作成
-- [ ] `tsconfig.json` に `types: ["vitest", "jest-dom"]` を追記（`compilerOptions`）
-- [ ] `package.json` にスクリプト追加
+- [x] `vitest.config.ts` をプロジェクトルートに作成
+- [x] `tsconfig.json` に `types: ["vitest", "jest-dom"]` を追記（`compilerOptions`）
+- [x] `package.json` にスクリプト追加
 ```json
 {
   "scripts": {
