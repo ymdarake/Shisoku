@@ -5,47 +5,49 @@
 
 ---
 
-## 🎯 Option 1: Tone.js のローカルビルド化（推定: 1時間）
+## 🎯 Option 1: Tone.js のローカルビルド化（推定: 1時間）✅ 完了
 
-### Phase 1: 依存関係の追加（5分）
-- [ ] `npm install tone` を実行
-- [ ] `package.json` の `dependencies` に `tone` が追加されたことを確認
-- [ ] コミット: `:wrench: Tone.jsをnpm依存に追加`
+### Phase 1: 依存関係の追加（5分）✅
+- [x] `npm install tone` を実行
+- [x] `package.json` の `dependencies` に `tone` が追加されたことを確認
+- [x] コミット: `:wrench: Tone.jsをnpm依存に追加`
 
-### Phase 2: import文の追加（5分）
-- [ ] `src/services/audio.ts` を開く
-- [ ] ファイル冒頭に `import * as Tone from 'tone';` を追加
-- [ ] グローバル宣言 `declare const Tone: any;` を削除
+### Phase 2: import文の追加（5分）✅
+- [x] `src/services/audio.ts` を開く
+- [x] ファイル冒頭に `import * as Tone from 'tone';` を追加
+- [x] グローバル宣言 `declare const Tone: any;` を削除
 
-### Phase 3: 型定義の改善（10分）
-- [ ] `any` 型を使っている箇所を特定（検索: `Tone.`）
-- [ ] 主要な型（`Tone.Synth`, `Tone.Transport` など）を明示的に型付け
-- [ ] コミット: `:recycle: Tone.jsをローカルimportに変更し型を改善`
+### Phase 3: 型定義の改善（10分）✅
+- [x] `any` 型を使っている箇所を特定（検索: `Tone.`）
+- [x] 主要な型（`Tone.Synth`, `Tone.Transport` など）を明示的に型付け
+- [x] コミット: `:recycle: Tone.jsをローカルimportに変更し型を改善`
 
-### Phase 4: HTML からの CDN 削除（5分）
-- [ ] `index.html` を開く
-- [ ] `<script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>` を削除
-- [ ] コミット: `:fire: Tone.jsのCDN読み込みを削除`
+### Phase 4: HTML からの CDN 削除（5分）✅
+- [x] `index.html` を開く
+- [x] `<script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>` を削除
+- [x] コミット: `:fire: Tone.jsのCDN読み込みを削除`
 
-### Phase 5: 動作確認（15分）
-- [ ] `npm run dev` で開発サーバー起動
-- [ ] ゲーム開始して BGM が再生されるか確認
-- [ ] 効果音（クリック、正解、不正解）が鳴るか確認
-- [ ] ボリューム切り替えが機能するか確認
-- [ ] コンソールエラーがないか確認
+### Phase 5: 動作確認（15分）✅
+- [x] `npm run dev` で開発サーバー起動
+- [x] ゲーム開始して BGM が再生されるか確認
+- [x] 効果音（クリック、正解、不正解）が鳴るか確認
+- [x] ボリューム切り替えが機能するか確認
+- [x] コンソールエラーがないか確認
 
-### Phase 6: ビルド確認（10分）
-- [ ] `npm run build` を実行
-- [ ] ビルドエラーがないか確認
-- [ ] `npm run preview` でプレビュー
-- [ ] プレビュー環境で音声機能を再確認
-- [ ] コミット: `:white_check_mark: Tone.jsローカル化の動作確認完了`
+### Phase 6: ビルド確認（10分）✅
+- [x] `npm run build` を実行
+- [x] ビルドエラーがないか確認
+- [x] `npm run preview` でプレビュー
+- [x] プレビュー環境で音声機能を再確認
+- [x] コミット: `:white_check_mark: Tone.jsローカル化の動作確認完了`
 
-### Phase 7: ドキュメント更新（10分）
-- [ ] `.claude/CLAUDE.md` の技術スタックセクションを更新
+### Phase 7: ドキュメント更新（10分）✅
+- [x] `.claude/CLAUDE.md` の技術スタックセクションを更新
   - 「CDN経由」→「npm パッケージ」に修正
   - グローバル変数の記述を削除
-- [ ] コミット: `:memo: Tone.jsのローカル化をドキュメントに反映`
+- [x] コミット: `:memo: Tone.jsのローカル化をドキュメントに反映`
+
+**🎉 Option 1 完了！** (コミット: c92f072)
 
 ---
 
