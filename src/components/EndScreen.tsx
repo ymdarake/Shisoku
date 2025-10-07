@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { GameResult } from '../types';
+import { openTwitterShare } from '../utils/share';
 
 interface EndScreenProps {
   results: GameResult[];
@@ -27,6 +28,14 @@ export const EndScreen: React.FC<EndScreenProps> = ({ results, onPlayAgain, onBa
     }
   };
 
+  const handleShare = () => {
+    openTwitterShare({
+      score,
+      time: totalTime,
+      totalQuestions,
+    });
+  };
+
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <h2 className="text-3xl font-bold text-center mb-4">{locale.finalResults}</h2>
@@ -34,7 +43,21 @@ export const EndScreen: React.FC<EndScreenProps> = ({ results, onPlayAgain, onBa
         <p className="text-2xl font-semibold text-indigo-500">{locale.score.replace('{score}', score).replace('{total}', totalQuestions)}</p>
         <p className="text-2xl font-semibold text-green-500">{`${locale.time}: ${formatTime(totalTime)}`}</p>
       </div>
-      
+
+      {/* Twitter/X シェアボタン */}
+      <div className="flex justify-center mb-6">
+        <button
+          onClick={handleShare}
+          className="flex items-center space-x-2 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition"
+          aria-label="スコアをTwitter/Xでシェア"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+          <span>スコアをシェア</span>
+        </button>
+      </div>
+
       <div className="max-w-md mx-auto my-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <label htmlFor="name-input" className="block text-center font-medium mb-2">{locale.enterYourName}</label>
         <div className="flex items-center space-x-2">

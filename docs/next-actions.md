@@ -149,19 +149,19 @@ AC / DoD
 
 ### 3.1 Twitter/X シェア（午前）
 1) テスト
-- [ ] 共有テキスト生成のテスト（時間整形、ゼロパディング）
-- [ ] URL エンコードのテスト
+- [x] 共有テキスト生成のテスト（時間整形、ゼロパディング）
+- [x] URL エンコードのテスト
 
 2) 実装
-- [ ] `src/utils/share.ts` を新規作成し `generateShareText`/`shareToTwitter` を実装
-- [ ] `src/components/EndScreen.tsx` にシェアボタンを追加
+- [x] `src/utils/share.ts` を新規作成し `generateShareText`/`shareToTwitter` を実装
+- [x] `src/components/EndScreen.tsx` にシェアボタンを追加
 
 3) リファクタ
-- [ ] テキスト生成処理のユーティリティ化と単体テスト
+- [x] テキスト生成処理のユーティリティ化と単体テスト
 
 AC / DoD
-- [ ] 実行時に新規タブで Web Intent が開く
-- [ ] スコア、時間、総問題数、ハッシュタグを含む
+- [x] 実行時に新規タブで Web Intent が開く
+- [x] スコア、時間、総問題数、ハッシュタグを含む
 
 ### 3.2 画像生成（午後・任意）
 - [ ] Canvas API でシェア画像生成ユーティリティ（任意）
