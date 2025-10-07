@@ -29,3 +29,13 @@ export interface RankingEntry {
     time: number; // in seconds
     date: string;
 }
+
+/**
+ * 式を構成するトークン（数字または演算子）
+ * ユーザーの入力を表現するために使用
+ */
+export interface Token {
+  value: string;
+  type: 'number' | 'operator';
+  originalIndex?: number; // 問題の数字配列における元のインデックス（数字の場合のみ）
+}

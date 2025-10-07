@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { Problem } from '../types';
+import type { Problem, Token } from '../types';
 import { safeEvaluateExpression } from '../services/gameLogic';
 import { useKeyboardInput } from '../hooks/useKeyboardInput';
 import { isNumberKey, toOperator } from '../constants/keyboardMap';
@@ -24,12 +24,6 @@ interface GameScreenProps {
   onPlayCorrectSound: () => void;
   onPlayIncorrectSound: () => void;
   onInvalidAction: () => void;
-}
-
-interface Token {
-  value: string;
-  type: 'number' | 'operator';
-  originalIndex?: number;
 }
 
 export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound, onInvalidAction }) => {
