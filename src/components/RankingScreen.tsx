@@ -1,17 +1,12 @@
 import React from 'react';
 import type { RankingEntry } from '../types';
+import { formatTime } from '../utils/formatTime';
 
 interface RankingScreenProps {
   rankings: RankingEntry[];
   onBackToTop: () => void;
   locale: { [key: string]: any };
 }
-
-const formatTime = (totalSeconds: number) => {
-  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-  const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
-};
 
 export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackToTop, locale }) => {
   return (

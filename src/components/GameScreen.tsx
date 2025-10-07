@@ -3,6 +3,7 @@ import type { Problem } from '../types';
 import { safeEvaluateExpression } from '../services/gameLogic';
 import { useKeyboardInput } from '../hooks/useKeyboardInput';
 import { isNumberKey, toOperator } from '../constants/keyboardMap';
+import { formatTime } from '../utils/formatTime';
 
 import { ProblemDisplay } from './ProblemDisplay';
 import { InputDisplay } from './InputDisplay';
@@ -29,12 +30,6 @@ interface Token {
   type: 'number' | 'operator';
   originalIndex?: number;
 }
-
-const formatTime = (totalSeconds: number) => {
-  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-  const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
-};
 
 export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound, onInvalidAction }) => {
   const [tokens, setTokens] = useState<Token[]>([]);

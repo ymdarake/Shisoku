@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { GameResult } from '../types';
 import { openTwitterShare } from '../utils/share';
+import { formatTime } from '../utils/formatTime';
 
 interface EndScreenProps {
   results: GameResult[];
@@ -15,12 +16,6 @@ interface EndScreenProps {
 export const EndScreen: React.FC<EndScreenProps> = ({ results, onPlayAgain, onBackToTop, onSaveRanking, locale, totalQuestions, totalTime }) => {
   const [name, setName] = useState('');
   const score = results.filter(r => r.isCorrect).length;
-
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-    const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  };
 
   const handleSave = () => {
     if (name.trim()) {

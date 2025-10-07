@@ -1,17 +1,10 @@
+import { formatTime } from './formatTime';
+
 interface ShareData {
   score: number;
   time: number; // 秒数
   totalQuestions: number;
 }
-
-/**
- * 時間を MM:SS 形式にフォーマット（ゼロパディング）
- */
-const formatTime = (totalSeconds: number): string => {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-};
 
 /**
  * スコア共有用のテキストを生成
