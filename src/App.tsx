@@ -202,10 +202,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans ${isShaking ? 'shake-animation' : ''}`}>
-      <Header 
-        title={locale.title as string} 
-        language={language} 
+    <div className={`min-h-screen flex flex-col font-sans bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 ${isShaking ? 'shake-animation' : ''}`}>
+      <Header
+        title={locale.title as string}
+        language={language}
         onLanguageChange={handleLanguageChange}
         languageLabel={locale.language as string}
         isBgmOn={isBgmOn}
@@ -217,7 +217,7 @@ const App: React.FC = () => {
       <main className="flex-grow container mx-auto p-4">
         {renderContent()}
       </main>
-      <footer className="text-center p-4 text-xs text-gray-500">
+      <footer className="text-center p-4 text-xs text-gray-500 dark:text-gray-400">
         &copy; 2024 Math Puzzle Game
       </footer>
     </div>

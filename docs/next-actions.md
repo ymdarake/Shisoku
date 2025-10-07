@@ -174,17 +174,19 @@ AC / DoD
 **所要**: 半日 / **TDD**: 部分対応
 
 ### 4.1 Tailwind 設定と状態管理
-- [ ] `tailwind.config.js` の `darkMode` 設定を確認（`class`/`media`）
-- [ ] `src/hooks/useDarkMode.ts` を新規作成
-- [ ] `localStorage` でテーマ永続化、初期値は `prefers-color-scheme`
+- [x] `tailwind.config.js` の `darkMode` 設定を確認（`class`/`media`）
+- [x] `src/hooks/useDarkMode.ts` を新規作成
+- [x] `localStorage` でテーマ永続化、初期値は `prefers-color-scheme`
 
 ### 4.2 UI 実装
-- [ ] `src/components/Header.tsx` にトグルボタン追加
-- [ ] 太陽/月アイコンの切替
+- [x] `src/components/Header.tsx` にトグルボタン追加
+- [x] 太陽/月アイコンの切替
+- [x] 全コンポーネントにダークモードスタイル適用
 
 AC / DoD
-- [ ] ライト/ダークが即時反映
-- [ ] 再訪時にユーザー設定が保持
+- [x] ライト/ダークが即時反映
+- [x] 再訪時にユーザー設定が保持
+- [x] 全画面・全コンポーネントでダークモードが正しく動作
 
 ---
 
