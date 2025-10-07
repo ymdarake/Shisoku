@@ -143,9 +143,9 @@ npm install
   - サーバー: ポート3000、ホスト0.0.0.0
   - パスエイリアス: `@/` → ルートディレクトリ
 - **言語**: TypeScript 5.8
-- **音楽**: Tone.js 14.7.77
-  - CDN経由（`https://unpkg.com/tone@14.7.77/build/Tone.js`）
-  - グローバル変数 `Tone` として宣言（型定義: `declare const Tone: any`）
+- **音楽**: Tone.js 15.1.22
+  - npm パッケージとして管理（`import * as Tone from 'tone'`）
+  - 型定義付き（`Tone.PolySynth`, `Tone.Volume` 等）
 - **スタイリング**: Tailwind CSS 3
   - ローカルビルド（PostCSS + autoprefixer）
   - カスタムアニメーション: `shake-animation`（振動エフェクト）
@@ -164,14 +164,13 @@ npm install
 ## 開発・デバッグ時の注意点
 
 ### 環境要件
-- **インターネット接続**: Tone.jsのみCDN経由（React、Tailwind CSSはローカルビルド）
 - **ブラウザAPI**: localStorage、Web Audio API（Tone.js）が必要
 - **ポート3000**: デフォルト開発サーバーポート
+- **オフライン動作**: 全依存関係がローカルビルドされるため、オフライン環境でも動作可能
 
 ### 技術的制約
 - 式評価に `new Function()` を使用（サーバーサイドレンダリング不可）
-- Tone.jsのみCDN依存
-- テストフレームワーク未導入（手動テストのみ）
+- テストはVitest（ユニット・コンポーネントテスト導入済み）
 
 ### デバッグポイント
 - Tone.js初期化エラー → ユーザーインタラクション後に `Tone.start()` を確認

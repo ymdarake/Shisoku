@@ -1,21 +1,20 @@
-// This declaration is needed because Tone.js is loaded from a CDN.
-declare const Tone: any;
+import * as Tone from 'tone';
 
 class AudioService {
   private isInitialized = false;
-  private bgmSynth: any;
-  private sfxSynth: any;
-  private kick: any;
-  private bass: any;
-  private hihat: any;
-  private bgmVolume: any;
-  private sfxVolume: any;
+  private bgmSynth: Tone.PolySynth | null = null;
+  private sfxSynth: Tone.PolySynth | null = null;
+  private kick: Tone.MembraneSynth | null = null;
+  private bass: Tone.MonoSynth | null = null;
+  private hihat: Tone.MetalSynth | null = null;
+  private bgmVolume: Tone.Volume | null = null;
+  private sfxVolume: Tone.Volume | null = null;
   
   private _isBgmOn = true;
   private _isSfxOn = true;
 
   constructor() {
-    if (typeof Tone !== 'undefined') {
+    if (Tone) {
       // --- Volume Controls ---
       this.bgmVolume = new Tone.Volume(-16).toDestination();
       this.sfxVolume = new Tone.Volume(4).toDestination();
@@ -88,7 +87,7 @@ class AudioService {
   }
 
   async init() {
-    if (!this.isInitialized && typeof Tone !== 'undefined') {
+    if (!this.isInitialized) {
       await Tone.start();
       this.isInitialized = true;
       console.log('Audio context started');
