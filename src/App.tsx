@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { GameState, Language, Problem, GameResult, RankingEntry } from './types';
 import { locales } from './constants/locales';
+import { TOTAL_QUESTIONS } from './constants/game';
 import { generateProblems } from './services/gameLogic';
 import { getRankings, saveRanking } from './services/ranking';
 import { audioService } from './services/audio';
@@ -12,8 +13,6 @@ import { GameScreen } from './components/GameScreen';
 import { EndScreen } from './components/EndScreen';
 import { MessageArea } from './components/MessageArea';
 import { RankingScreen } from './components/RankingScreen';
-
-const TOTAL_QUESTIONS = 10;
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>('ja');

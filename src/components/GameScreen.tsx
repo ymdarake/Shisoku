@@ -3,6 +3,7 @@ import type { Problem } from '../types';
 import { safeEvaluateExpression } from '../services/gameLogic';
 import { useKeyboardInput } from '../hooks/useKeyboardInput';
 import { isNumberKey, toOperator } from '../constants/keyboardMap';
+import { ANSWER_JUDGMENT_DELAY_MS } from '../constants/game';
 import { formatTime } from '../utils/formatTime';
 
 import { ProblemDisplay } from './ProblemDisplay';
@@ -150,12 +151,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
       setMessage(locale.correct);
       setMessageType('success');
       onPlayCorrectSound();
-      setTimeout(() => onCorrect(expression), 2000);
+      setTimeout(() => onCorrect(expression), ANSWER_JUDGMENT_DELAY_MS);
     } else {
       setMessage(locale.incorrect);
       setMessageType('error');
       onPlayIncorrectSound();
-      setTimeout(() => onIncorrect(expression), 2000);
+      setTimeout(() => onIncorrect(expression), ANSWER_JUDGMENT_DELAY_MS);
     }
   }, [tokens, expression, problem, locale, onCorrect, onIncorrect, onPlayCorrectSound, onPlayIncorrectSound, usedNumberIndices.length]);
 

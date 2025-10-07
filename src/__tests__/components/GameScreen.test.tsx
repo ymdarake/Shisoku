@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { GameScreen } from '../../components/GameScreen';
+import { ANSWER_JUDGMENT_DELAY_MS } from '../../constants/game';
 
 describe('GameScreen - keyboard number input (Phase 1 - Red)', () => {
   const baseProps = {
@@ -151,8 +152,8 @@ describe('GameScreen - special keys (Phase 3 - Red)', () => {
 
     await userEvent.keyboard('{Enter}');
 
-    // Wait for the setTimeout (2000ms) in checkAnswer
-    await new Promise(resolve => setTimeout(resolve, 2100));
+    // Wait for the ANSWER_JUDGMENT_DELAY_MS + buffer
+    await new Promise(resolve => setTimeout(resolve, ANSWER_JUDGMENT_DELAY_MS + 100));
 
     // onCorrect should be called because 4 * 3 / 2 / 1 = 6
     expect(baseProps.onCorrect).toHaveBeenCalled();
