@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { GameState, Language, Problem, GameResult, RankingEntry } from './types';
+import type { GameState, Language, Problem, GameResult, RankingEntry, Difficulty } from './types';
 import { locales } from './constants/locales';
 import { TOTAL_QUESTIONS } from './constants/game';
 import { generateProblems } from './services/gameLogic';
@@ -29,6 +29,7 @@ const App: React.FC = () => {
   const [isShaking, setIsShaking] = useState(false);
   const [allProblems, setAllProblems] = useState<Problem[]>([]);
   const [showCountdown, setShowCountdown] = useState(false);
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
 
   const locale = locales[language];
 
@@ -60,7 +61,7 @@ const App: React.FC = () => {
     // Generate all problems during countdown
     setIsLoading(true);
     setTimeout(() => {
-      const problems = generateProblems(TOTAL_QUESTIONS);
+      const problems = generateProblems(TOTAL_QUESTIONS, difficulty);
       setAllProblems(problems);
       setIsLoading(false);
     }, 100);
@@ -197,7 +198,7 @@ const App: React.FC = () => {
         return <RankingScreen rankings={rankings} onBackToTop={handleBackToTop} locale={locale} />;
       case 'idle':
       default:
-        return <StartScreen onStart={handleStartGame} onShowRanking={handleShowRanking} locale={locale} />;
+        return <StartScreen onStart={handleStartGame} onShowRanking={handleShowRanking} locale={locale} difficulty={difficulty} onSelectDifficulty={setDifficulty} />;
     }
   };
 

@@ -106,29 +106,29 @@
 ### Day 1 Afternoon: UI実装（2時間）
 
 #### Step 7: 状態管理の追加（10分）
-- [ ] `src/App.tsx` を開く
-- [ ] `difficulty` ステートを追加: `useState<Difficulty>('normal')`
-- [ ] `setDifficulty` 関数をエクスポート
+- [x] `src/App.tsx` を開く
+- [x] `difficulty` ステートを追加: `useState<Difficulty>('normal')`
+- [x] `setDifficulty` 関数をエクスポート
 
 #### Step 8: DifficultySelector コンポーネント作成（30分）
-- [ ] `src/components/DifficultySelector.tsx` を新規作成
-- [ ] 3つのボタン（Easy/Normal/Hard）を配置
-- [ ] props: `difficulty`, `onSelect`
-- [ ] 選択中の難易度をハイライト表示
-- [ ] コミット: `:sparkles: DifficultySelector コンポーネントを作成`
+- [x] `src/components/DifficultySelector.tsx` を新規作成
+- [x] 3つのボタン（Easy/Normal/Hard）を配置
+- [x] props: `difficulty`, `onSelect`
+- [x] 選択中の難易度をハイライト表示
+- [x] コミット: `:sparkles: DifficultySelector コンポーネントを作成`
 
 #### Step 9: StartScreen への統合（15分）
-- [ ] `src/components/StartScreen.tsx` を開く
-- [ ] `DifficultySelector` をインポート
-- [ ] スタートボタンの上に配置
-- [ ] `difficulty` と `setDifficulty` を props で受け取り
-- [ ] コミット: `:sparkles: StartScreenに難易度選択を追加`
+- [x] `src/components/StartScreen.tsx` を開く
+- [x] `DifficultySelector` をインポート
+- [x] スタートボタンの上に配置
+- [x] `difficulty` と `setDifficulty` を props で受け取り
+- [x] コミット: `:sparkles: StartScreenに難易度選択を追加`
 
 #### Step 10: 難易度の伝播（20分）
-- [ ] `App.tsx` の `startGame` 関数を修正
-- [ ] `generateProblems(TOTAL_QUESTIONS, difficulty)` に難易度を渡す
-- [ ] `currentProblem` の生成時にも難易度を考慮
-- [ ] コミット: `:sparkles: 難易度設定をゲームロジックに連携`
+- [x] `App.tsx` の `startGame` 関数を修正
+- [x] `generateProblems(TOTAL_QUESTIONS, difficulty)` に難易度を渡す
+- [x] `currentProblem` の生成時にも難易度を考慮
+- [x] コミット: `:sparkles: 難易度設定をゲームロジックに連携`
 
 #### Step 11: スタイリング（20分）
 - [ ] `DifficultySelector` のボタンにカラースキーム適用
@@ -140,18 +140,18 @@
 - [ ] コミット: `:art: 難易度選択UIのスタイリング`
 
 #### Step 12: ローカライズ（15分）
-- [ ] `src/constants/locales.ts` を開く
-- [ ] 難易度ラベルを追加（ja/en）
-- [ ] `DifficultySelector` で多言語テキストを使用
-- [ ] コミット: `:globe_with_meridians: 難易度設定の多言語対応`
+- [x] `src/constants/locales.ts` を開く
+- [x] 難易度ラベルを追加（ja/en）
+- [x] `DifficultySelector` で多言語テキストを使用
+- [x] コミット: `:globe_with_meridians: 難易度設定の多言語対応`
 
 ### Day 2 Morning: テストと調整（1時間）
 
 #### Step 13: コンポーネントテスト（30分）
-- [ ] `src/__tests__/components/DifficultySelector.test.tsx` を作成
-- [ ] ボタンクリックで `onSelect` が呼ばれるかテスト
-- [ ] 選択状態の視覚的フィードバックをテスト
-- [ ] コミット: `:white_check_mark: DifficultySelector のテストを追加`
+- [x] `src/__tests__/components/DifficultySelector.test.tsx` を作成
+- [x] ボタンクリックで `onSelect` が呼ばれるかテスト
+- [x] 選択状態の視覚的フィードバックをテスト
+- [x] コミット: `:white_check_mark: DifficultySelector のテストを追加`
 
 #### Step 14: 統合テスト（20分）
 - [ ] 手動で全難易度をプレイ

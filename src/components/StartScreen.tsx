@@ -1,21 +1,28 @@
 import React from 'react';
 import { Rules } from './Rules';
+import { DifficultySelector } from './DifficultySelector';
+import type { Difficulty } from '../types';
 
 interface StartScreenProps {
   onStart: () => void;
   onShowRanking: () => void;
   locale: { [key: string]: any };
+  difficulty?: Difficulty;
+  onSelectDifficulty?: (d: Difficulty) => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onShowRanking, locale }) => {
+export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onShowRanking, locale, difficulty = 'normal', onSelectDifficulty }) => {
   return (
     <div className="flex flex-col items-center justify-center p-4 text-center">
-      <Rules 
-        title={locale.ruleTitle} 
-        rules={locale.rules} 
+      <Rules
+        title={locale.ruleTitle}
+        rules={locale.rules}
         exampleTitle={locale.exampleTitle}
         exampleLines={locale.exampleLines}
       />
+      <div className="mt-4">
+        <DifficultySelector difficulty={difficulty} onSelect={(d) => onSelectDifficulty?.(d)} locale={locale} />
+      </div>
       <div className="mt-6 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
         <button
           onClick={onStart}

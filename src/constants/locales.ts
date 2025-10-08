@@ -55,6 +55,9 @@ export const locales: Locales = {
     sfxOn: '効果音 ON',
     sfxOff: '効果音 OFF',
     confirmQuit: 'プレイを中断してトップに戻りますか？',
+    difficultyEasy: 'かんたん',
+    difficultyNormal: 'ふつう',
+    difficultyHard: 'むずかしい',
   },
   en: {
     title: 'Math Puzzle Game',
@@ -110,5 +113,8 @@ export const locales: Locales = {
     sfxOn: 'SFX ON',
     sfxOff: 'SFX OFF',
     confirmQuit: 'Do you want to quit and return to the top?',
+    difficultyEasy: 'Easy',
+    difficultyNormal: 'Normal',
+    difficultyHard: 'Hard',
   },
 };
