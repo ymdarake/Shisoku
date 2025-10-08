@@ -56,9 +56,9 @@
 ### Day 1 Morning: 型定義とロジック（2時間）
 
 #### Step 1: 型定義の追加（10分）
-- [ ] `src/types.ts` を開く
-- [ ] `Difficulty` 型を追加: `'easy' | 'normal' | 'hard'`
-- [ ] `DifficultyConfig` インターフェースを定義
+- [x] `src/types.ts` を開く
+- [x] `Difficulty` 型を追加: `'easy' | 'normal' | 'hard'`
+- [x] `DifficultyConfig` インターフェースを定義
   ```ts
   interface DifficultyConfig {
     numberRange: [number, number];
@@ -66,36 +66,36 @@
     label: string;
   }
   ```
-- [ ] コミット: `:sparkles: 難易度設定の型定義を追加`
+- [x] コミット: `:sparkles: 難易度設定の型定義を追加`
 
 #### Step 2: 定数定義（10分）
-- [ ] `src/constants/difficulty.ts` を新規作成
-- [ ] `DIFFICULTY_CONFIGS` オブジェクトを定義
+- [x] `src/constants/difficulty.ts` を新規作成
+- [x] `DIFFICULTY_CONFIGS` オブジェクトを定義
   - easy: 数字 0-5, 目標 0-5
   - normal: 数字 0-9, 目標 0-9（現在の仕様）
   - hard: 数字 0-9, 目標 0-20
-- [ ] コミット: `:wrench: 難易度設定の定数を定義`
+- [x] コミット: `:wrench: 難易度設定の定数を定義`
 
 #### Step 3: テストファイル作成（15分）
-- [ ] `src/__tests__/services/gameLogic.test.ts` を開く
-- [ ] `generateProblem` の難易度別テストケースを追加
+- [x] `src/__tests__/services/gameLogic.test.ts` を開く
+- [x] `generateProblem` の難易度別テストケースを追加
   - easy: 生成された数字が 0-5 の範囲内か
   - hard: 目標値が 0-20 の範囲内か
-- [ ] テストを実行して失敗することを確認（Red）
+- [x] テストを実行して失敗することを確認（Red）
 
 #### Step 4: gameLogic の修正（30分）
-- [ ] `src/services/gameLogic.ts` の `generateProblem` 関数を開く
-- [ ] 引数に `difficulty: Difficulty = 'normal'` を追加
-- [ ] `DIFFICULTY_CONFIGS[difficulty]` から範囲を取得
-- [ ] 数字生成ロジックを修正して範囲を反映
-- [ ] テストを実行して通ることを確認（Green）
-- [ ] コミット: `:sparkles: generateProblemに難易度パラメータを追加`
+- [x] `src/services/gameLogic.ts` の `generateProblem` 関数を開く
+- [x] 引数に `difficulty: Difficulty = 'normal'` を追加
+- [x] `DIFFICULTY_CONFIGS[difficulty]` から範囲を取得
+- [x] 数字生成ロジックを修正して範囲を反映
+- [x] テストを実行して通ることを確認（Green）
+- [x] コミット: `:sparkles: generateProblemに難易度パラメータを追加`
 
 #### Step 5: generateProblems の修正（15分）
-- [ ] `generateProblems(count, difficulty)` に難易度を追加
-- [ ] 内部の `generateProblem` 呼び出しに難易度を渡す
-- [ ] 既存テストが通るか確認
-- [ ] コミット: `:recycle: generateProblemsに難易度を伝播`
+- [x] `generateProblems(count, difficulty)` に難易度を追加
+- [x] 内部の `generateProblem` 呼び出しに難易度を渡す
+- [x] 既存テストが通るか確認
+- [x] コミット: `:recycle: generateProblemsに難易度を伝播`
 
 #### Step 6: リファクタリング（20分）
 - [ ] 重複コードの抽出

@@ -24,10 +24,10 @@ export interface Locales {
 }
 
 export interface RankingEntry {
-    name: string;
-    score: number;
-    time: number; // in seconds
-    date: string;
+  name: string;
+  score: number;
+  time: number; // in seconds
+  date: string;
 }
 
 /**
@@ -38,4 +38,13 @@ export interface Token {
   value: string;
   type: 'number' | 'operator';
   originalIndex?: number; // 問題の数字配列における元のインデックス（数字の場合のみ）
+}
+
+// 難易度設定
+export type Difficulty = 'easy' | 'normal' | 'hard';
+
+export interface DifficultyConfig {
+  numberRange: [number, number];
+  targetRange: [number, number];
+  label: string;
 }

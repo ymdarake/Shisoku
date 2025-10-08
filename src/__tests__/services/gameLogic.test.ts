@@ -131,3 +131,22 @@ describe('generateProblems', () => {
     });
   });
 });
+
+describe('difficulty ranges (Red first)', () => {
+  it('easy: numbers should be within 0-5', () => {
+    const problem = generateProblem('easy');
+    expect(problem).not.toBeNull();
+    if (problem) {
+      expect(problem.numbers.every(n => n >= 0 && n <= 5)).toBe(true);
+    }
+  });
+
+  it('hard: target should be within 0-20', () => {
+    const problem = generateProblem('hard');
+    expect(problem).not.toBeNull();
+    if (problem) {
+      expect(problem.target).toBeGreaterThanOrEqual(0);
+      expect(problem.target).toBeLessThanOrEqual(20);
+    }
+  });
+});
