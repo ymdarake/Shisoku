@@ -8,7 +8,7 @@ export const locales: Locales = {
     rules: {
       rule1: '提示された4つの、0から9までの数字をすべて1回ずつ使います。',
       rule2: '四則演算（+、-、*、/）と括弧（()）を使って、「目的の数字」になる計算式を作ってください。',
-      rule3: '目的の数字は0から9までの整数です。',
+      rule3: '目的の数字は難易度により異なります（かんたん: 0-5／ふつう: 0-9／むずかしい: 0-20 の整数）。',
       rule4: '数字の順番は自由に変えられます。',
       rule5: '割り算は、結果が整数になる場合のみ有効です。',
       rule6: '数字を続けて入力して、2桁以上の数（例: 12）を作ることはできません。',
@@ -66,7 +66,7 @@ export const locales: Locales = {
     rules: {
       rule1: 'Use all four given numbers (0-9) exactly once.',
       rule2: 'Create an expression using arithmetic operators (+, -, *, /) and parentheses (()) to equal the "Target Number".',
-      rule3: 'The target number is an integer from 0 to 9.',
+      rule3: 'The target number depends on difficulty (Easy: 0–5, Normal: 0–9, Hard: 0–20; integers).',
       rule4: 'The order of the numbers can be changed freely.',
       rule5: 'Division is only valid if the result is an integer.',
       rule6: 'You cannot enter consecutive numbers to form multi-digit numbers (e.g., 12).',
