@@ -95,6 +95,77 @@ export const useRanking = (difficulty: Difficulty) => {
 };
 ```
 
+### View から Context（DI）へ到達する道順（呼び出しチェーン）
+1) Component（View）で `useRanking(difficulty)` を呼ぶ
+2) `useRanking` の内部で `useRankingRepository()` を呼び、Context から Repository 抽象を取得
+3) `useRankingRepository()` は React の `useContext(RankingRepositoryContext)` を通じて、最上位で DI されたインスタンスを受け取る
+4) `index.tsx` の Composition Root で、`<RankingRepositoryProvider repository={new LocalStorageRankingRepository()} />` により具体実装を注入
+
+呼び出し関係の全体像:
+
+```
+Component(View)
+  -> useRanking(difficulty)
+     -> useRankingRepository()  // Context 参照
+        -> useContext(RankingRepositoryContext)
+           -> Provider が注入した repository インスタンス（LocalStorage など）
+```
+
+最少コード例:
+
+```tsx
+// 1) View: Component から useRanking を呼ぶ
+export const RankingList: React.FC<{ difficulty: Difficulty }> = ({ difficulty }) => {
+  const { list, loading, error } = useRanking(difficulty);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
+  return (
+    <ul>
+      {list.map((r) => (
+        <li key={`${r.name}-${r.date}`}>{r.name}: {r.score}</li>
+      ))}
+    </ul>
+  );
+};
+
+// 2) Hook: useRanking 内部で Context から Repository を取得
+export const useRanking = (difficulty: Difficulty) => {
+  const rankingRepository = useRankingRepository();
+  // ここで rankingRepository.getRankings(difficulty) を使って取得
+  // ... loading/error/caching を内包して返す
+  return { list, loading, error };
+};
+
+// 3) Context: Provider/Hook 実装
+const RankingRepositoryContext = createContext<RankingRepository | null>(null);
+export const RankingRepositoryProvider: React.FC<{ repository: RankingRepository; children: React.ReactNode }>
+  = ({ repository, children }) => (
+    <RankingRepositoryContext.Provider value={repository}>{children}</RankingRepositoryContext.Provider>
+  );
+
+export const useRankingRepository = (): RankingRepository => {
+  const repo = useContext(RankingRepositoryContext);
+  if (!repo) throw new Error('RankingRepositoryContext not provided');
+  return repo;
+};
+
+// 4) Composition Root: index.tsx で具体実装を DI
+root.render(
+  <React.StrictMode>
+    <PreferencesRepositoryProvider repository={new LocalStoragePreferencesRepository()}>
+      <RankingRepositoryProvider repository={new LocalStorageRankingRepository()}>
+        <App />
+      </RankingRepositoryProvider>
+    </PreferencesRepositoryProvider>
+  </React.StrictMode>
+);
+```
+
+ポイント:
+- View は Repository の具体型を一切知らず、`useRanking` だけを呼ぶ
+- `useRanking` は Context 経由で「抽象」を受け取り、取得ロジックを集約
+- 具体実装の選択は Composition Root（`index.tsx`）に集約し、テストでは Provider に Stub/Memory 実装を注入して差し替え可能
+
 ### Component（UI）
 - 役割: 表示とユーザー操作、Hook の結果をレンダリング
 - 注意: 直接 Repository メソッドを呼ばず Hook/UseCase を通す（ロジック重複を防止）
