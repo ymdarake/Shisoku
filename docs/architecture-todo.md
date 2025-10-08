@@ -3,23 +3,23 @@
 小さな粒度で実装できる作業項目のリストです。各タスクは「テスト追加(RED) → 実装(GREEN) → リファクタリング(REFACTOR)」の順に進めます。
 
 ## 1) Composition Root（DI注入）
-- [ ] index.tsx に DI 構成ルートを作成（Repository を注入）
+- [x] index.tsx に DI 構成ルートを作成（Repository を注入）
   - RED: `index.test.tsx` で `setRankingRepository`/`setPreferencesRepository` がアプリ起動時1度だけ呼ばれる
   - GREEN: index.tsx で LocalStorage 実装を注入
   - REFACTOR: DI リセットのテストヘルパ
 
 ## 2) InMemory リポジトリ
-- [ ] Ranking: `repository/memory/InMemoryRankingRepository.ts` を追加
+- [x] Ranking: `repository/memory/InMemoryRankingRepository.ts` を追加
   - RED: 契約テスト（保存/取得/難易度分離/ソート/上限）
   - GREEN: メモリ配列で実装
   - REFACTOR: ソート/上限をユーティリティ化
-- [ ] Preferences: `repository/memory/InMemoryPreferencesRepository.ts` を追加
+- [x] Preferences: `repository/memory/InMemoryPreferencesRepository.ts` を追加
   - RED: 保存→読込往復、破損時 null
   - GREEN: メモリ実装
 
 ## 3) リポジトリ契約テスト
-- [ ] `__tests__/repository/ranking.contract.test.ts` を作成（`runRankingContract(repoFactory)`）
-- [ ] `__tests__/repository/preferences.contract.test.ts` を作成（`runPreferencesContract(repoFactory)`）
+- [x] `__tests__/repository/ranking.contract.test.ts` を作成（`runRankingContract(repoFactory)`）
+- [x] `__tests__/repository/preferences.contract.test.ts` を作成（`runPreferencesContract(repoFactory)`）
 
 ## 4) UseCase レイヤ（薄い）
 - [ ] `usecase/saveScore.ts`（ランキング保存 + 難易度 + 日付付与）
@@ -31,7 +31,7 @@
   - GREEN: Repository 経由で取得
 
 ## 5) Preferences Provider 導入
-- [ ] `context/PreferencesContext.tsx` を作成
+- [x] `context/PreferencesContext.tsx` を作成
   - RED: 初期化・更新・保存が機能する（PreferencesService をモック）
   - GREEN: 実装して `App.tsx` から移行
 
