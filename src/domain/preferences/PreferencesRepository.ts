@@ -1,4 +1,4 @@
-import type { UserPreferences } from './types';
+import type { UserPreferences } from './type';
 
 export interface PreferencesRepository {
     load(): Promise<UserPreferences | null>;

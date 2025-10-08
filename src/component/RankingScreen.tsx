@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import type { Difficulty } from '../types';
-import type { RankingEntry } from '../domain/ranking/types';
+import type { RankingEntry } from '../domain/ranking/type';
 import { formatTime } from '../utils/formatTime';
-import { repoGetRankings } from '../services/ranking';
+import { repoGetRankings } from '../service/ranking';
 
 interface RankingScreenProps {
   rankings: RankingEntry[]; // 初期表示用（現在の難易度）

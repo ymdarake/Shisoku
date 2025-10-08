@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { EndScreen } from '../../components/EndScreen'
+import { EndScreen } from '../../component/EndScreen'
 
 vi.mock('../../utils/share', async (orig) => {
     const actual = await (orig as any)()

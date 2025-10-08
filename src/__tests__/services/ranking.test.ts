@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { repoGetRankings as getRankings, repoSaveRanking as saveRanking } from '../../services/ranking';
-import { LocalStorageRankingRepository } from '../../repositories/localStorage/LocalStorageRankingRepository';
-import { setRankingRepository } from '../../services/ranking';
-import type { RankingEntry } from '../../domain/ranking/types';
+import { repoGetRankings as getRankings, repoSaveRanking as saveRanking } from '../../service/ranking';
+import { LocalStorageRankingRepository } from '../../repository/localStorage/LocalStorageRankingRepository';
+import { setRankingRepository } from '../../service/ranking';
+import type { RankingEntry } from '../../domain/ranking/type';
 
 // Mock localStorage
 const localStorageMock = (() => {

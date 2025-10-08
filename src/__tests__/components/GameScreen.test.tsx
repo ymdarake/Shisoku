@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { GameScreen } from '../../components/GameScreen';
-import { ANSWER_JUDGMENT_DELAY_MS } from '../../constants/game';
+import { GameScreen } from '../../component/GameScreen';
+import { ANSWER_JUDGMENT_DELAY_MS } from '../../constant/game';
 
 describe('GameScreen - keyboard number input (Phase 1 - Red)', () => {
   const baseProps = {

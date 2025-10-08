@@ -2,7 +2,7 @@ import { describe, it, vi, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { RankingScreen } from '../../components/RankingScreen'
+import { RankingScreen } from '../../component/RankingScreen'
 
 // Mock repoGetRankings to control data per difficulty
 vi.mock('../../services/ranking', () => ({
@@ -57,7 +57,7 @@ describe('RankingScreen - difficulty tabs', () => {
 
     it('renders empty state when no rankings for a difficulty', async () => {
         // Override mock for this test case: return empty for hard
-        const mod = await import('../../services/ranking')
+        const mod = await import('../../service/ranking')
         // @ts-expect-error test override
         mod.repoGetRankings = async (difficulty?: 'easy' | 'normal' | 'hard') => {
             if (difficulty === 'hard') return Promise.resolve([])

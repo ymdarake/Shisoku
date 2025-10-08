@@ -1,6 +1,6 @@
 import type { PreferencesRepository } from '../domain/preferences/PreferencesRepository';
-import { LocalStoragePreferencesRepository } from '../repositories/localStorage/LocalStoragePreferencesRepository';
-import type { UserPreferences } from '../domain/preferences/types';
+import { LocalStoragePreferencesRepository } from '../repository/localStorage/LocalStoragePreferencesRepository';
+import type { UserPreferences } from '../domain/preferences/type';
 
 let preferencesRepository: PreferencesRepository = new LocalStoragePreferencesRepository();
 

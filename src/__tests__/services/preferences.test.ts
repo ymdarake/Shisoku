@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { repoLoadPreferences, repoSavePreferences } from '../../services/preferences'
+import { repoLoadPreferences, repoSavePreferences } from '../../service/preferences'
 import type { UserPreferences } from '../../types'
 
 // Mock localStorage

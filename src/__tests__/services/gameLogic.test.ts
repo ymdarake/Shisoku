@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { safeEvaluateExpression, generateProblem, generateProblems } from '../../services/gameLogic';
+import { safeEvaluateExpression, generateProblem, generateProblems } from '../../service/gameLogic';
 
 describe('safeEvaluateExpression', () => {
   describe('正常系', () => {

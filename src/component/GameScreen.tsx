@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Problem, Token } from '../types';
-import { safeEvaluateExpression } from '../services/gameLogic';
+import { safeEvaluateExpression } from '../service/gameLogic';
 import { useKeyboardInput } from '../hooks/useKeyboardInput';
-import { isNumberKey, toOperator } from '../constants/keyboardMap';
-import { ANSWER_JUDGMENT_DELAY_MS } from '../constants/game';
+import { isNumberKey, toOperator } from '../constant/keyboardMap';
+import { ANSWER_JUDGMENT_DELAY_MS } from '../constant/game';
 import { formatTime } from '../utils/formatTime';
 
 import { ProblemDisplay } from './ProblemDisplay';

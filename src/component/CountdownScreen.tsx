@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { Language } from '../types';
-import { audioService } from '../services/audio';
+import { audioService } from '../service/audio';
 
 interface CountdownScreenProps {
   language: Language;

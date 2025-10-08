@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { GameState, Language, Problem, GameResult, RankingEntry, Difficulty } from './types';
-import { locales } from './constants/locales';
-import { TOTAL_QUESTIONS } from './constants/game';
-import { generateProblems } from './services/gameLogic';
-import { getRankings, saveRanking, repoGetRankings, repoSaveRanking } from './services/ranking';
-import { audioService } from './services/audio';
+import { locales } from './constant/locales';
+import { TOTAL_QUESTIONS } from './constant/game';
+import { generateProblems } from './service/gameLogic';
+import { getRankings, saveRanking, repoGetRankings, repoSaveRanking } from './service/ranking';
+import { audioService } from './service/audio';
 
-import { Header } from './components/Header';
-import { StartScreen } from './components/StartScreen';
-import CountdownScreen from './components/CountdownScreen';
-import { GameScreen } from './components/GameScreen';
-import { EndScreen } from './components/EndScreen';
-import { MessageArea } from './components/MessageArea';
-import { RankingScreen } from './components/RankingScreen';
-import { repoLoadPreferences, repoSavePreferences } from './services/preferences';
+import { Header } from './component/Header';
+import { StartScreen } from './component/StartScreen';
+import CountdownScreen from './component/CountdownScreen';
+import { GameScreen } from './component/GameScreen';
+import { EndScreen } from './component/EndScreen';
+import { MessageArea } from './component/MessageArea';
+import { RankingScreen } from './component/RankingScreen';
+import { repoLoadPreferences, repoSavePreferences } from './service/preferences';
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>('ja');

@@ -1,6 +1,6 @@
 import type { RankingRepository } from '../../domain/ranking/RankingRepository';
 import type { Difficulty } from '../../types';
-import type { RankingEntry } from '../../domain/ranking/types';
+import type { RankingEntry } from '../../domain/ranking/type';
 
 const RANKING_KEY = 'mathPuzzleRanking';
 const keyFor = (difficulty?: Difficulty) => (difficulty ? `${RANKING_KEY}:${difficulty}` : RANKING_KEY);

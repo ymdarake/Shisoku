@@ -1,7 +1,7 @@
 import type { Difficulty } from '../types';
-import type { RankingEntry } from '../domain/ranking/types';
+import type { RankingEntry } from '../domain/ranking/type';
 import type { RankingRepository } from '../domain/ranking/RankingRepository';
-import { LocalStorageRankingRepository } from '../repositories/localStorage/LocalStorageRankingRepository';
+import { LocalStorageRankingRepository } from '../repository/localStorage/LocalStorageRankingRepository';
 
 /**
  * Repository パターン: ランキングデータへの抽象化されたアクセス

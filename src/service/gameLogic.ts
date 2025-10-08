@@ -1,6 +1,6 @@
 
 import type { Problem, Difficulty } from '../types';
-import { DIFFICULTY_CONFIGS } from '../constants/difficulty';
+import { DIFFICULTY_CONFIGS } from '../constant/difficulty';
 
 // Safely evaluate a mathematical expression
 export const safeEvaluateExpression = (expression: string): number | null => {

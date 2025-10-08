@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { InputDisplay } from '../../components/InputDisplay';
+import { InputDisplay } from '../../component/InputDisplay';
 
 describe('InputDisplay', () => {
   it('should display the expression', () => {
