@@ -1,0 +1,20 @@
+# Cursor Rules
+
+- すべてのコード生成・編集時は、必ず次のドキュメントの内容と整合するようにしてください：
+  - /Users/ymdarake/.claude/CLAUDE.md
+
+- 方針:
+  - 日本語で応答すること。
+  - プロジェクトのアーキテクチャ/仕様/制約は上記 CLAUDE.md を優先。
+  - 用語やUI文言は `src/constants/locales.ts` に合わせる。
+  - ビルド/実行/テストは既存の npm scripts を使用（dev/build/preview/test）。
+
+- コードスタイル:
+  - 既存の TypeScript/React の記法・フォーマットに従う。
+  - 既存のTailwindクラス命名とコンポーネント分割方針を尊重する。
+
+- テスト指針:
+  - 可能な限り TDD を優先し、Vitest の既存構成に準拠して `src/__tests__/` 配下へ追加する。
+
+- 注意:
+  - セキュリティ/安全性に関する判断やTone.jsの初期化タイミング等は CLAUDE.md の規定に従う。
