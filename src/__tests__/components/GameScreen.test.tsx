@@ -11,12 +11,14 @@ describe('GameScreen - keyboard number input (Phase 1 - Red)', () => {
     onCorrect: vi.fn(),
     onIncorrect: vi.fn(),
     onSkip: vi.fn(),
+    onQuit: vi.fn(),
     locale: {
       buildExpression: '式を作ってください',
       correct: '正解！',
       incorrect: '不正解',
       question: '問題',
       skip: 'スキップ',
+      backToTop: 'トップに戻る',
     },
     questionNumber: 1,
     totalQuestions: 10,
@@ -101,12 +103,14 @@ describe('GameScreen - special keys (Phase 3 - Red)', () => {
     onCorrect: vi.fn(),
     onIncorrect: vi.fn(),
     onSkip: vi.fn(),
+    onQuit: vi.fn(),
     locale: {
       buildExpression: '式を作ってください',
       correct: '正解！',
       incorrect: '不正解',
       question: '問題',
       skip: 'スキップ',
+      backToTop: 'トップに戻る',
     },
     questionNumber: 1,
     totalQuestions: 10,
@@ -196,12 +200,14 @@ describe('GameScreen - accessibility (Phase 4)', () => {
     onCorrect: vi.fn(),
     onIncorrect: vi.fn(),
     onSkip: vi.fn(),
+    onQuit: vi.fn(),
     locale: {
       buildExpression: '式を作ってください',
       correct: '正解！',
       incorrect: '不正解',
       question: '問題',
       skip: 'スキップ',
+      backToTop: 'トップに戻る',
     },
     questionNumber: 1,
     totalQuestions: 10,
@@ -231,6 +237,16 @@ describe('GameScreen - accessibility (Phase 4)', () => {
 
     const skipButton = screen.getByRole('button', { name: /スキップ/i });
     expect(skipButton).toBeInTheDocument();
+  });
+
+  it('should show quit button to go back to top and call onQuit on click', async () => {
+    render(<GameScreen {...baseProps} />);
+
+    const quitButton = screen.getByRole('button', { name: /トップに戻る/i });
+    expect(quitButton).toBeInTheDocument();
+
+    await userEvent.click(quitButton);
+    expect(baseProps.onQuit).toHaveBeenCalled();
   });
 });
 

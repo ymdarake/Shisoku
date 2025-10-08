@@ -16,6 +16,7 @@ interface GameScreenProps {
   onCorrect: (answer: string) => void;
   onIncorrect: (answer: string) => void;
   onSkip: () => void;
+  onQuit: () => void;
   locale: { [key: string]: any };
   questionNumber: number;
   totalQuestions: number;
@@ -26,7 +27,7 @@ interface GameScreenProps {
   onInvalidAction: () => void;
 }
 
-export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound, onInvalidAction }) => {
+export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIncorrect, onSkip, onQuit, locale, questionNumber, totalQuestions, elapsedTime, onPlayClickSound, onPlayCorrectSound, onPlayIncorrectSound, onInvalidAction }) => {
   const [tokens, setTokens] = useState<Token[]>([]);
   const [message, setMessage] = useState(locale.buildExpression);
   const [messageType, setMessageType] = useState<'info' | 'success' | 'error'>('info');
@@ -209,6 +210,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
     onSkip();
   }
 
+  const handleQuitClick = () => {
+    onPlayClickSound();
+    onQuit();
+  }
+
   return (
     <main className="p-4 flex flex-col items-center min-h-[calc(100vh-80px)]" role="main">
       {/* ヘッダー: 問題番号とタイマー */}
@@ -243,9 +249,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
             onClear={handleClear}
             onBackspace={handleBackspace}
           />
-          <div className="mt-4">
+          <div className="mt-4 flex space-x-3">
             <button onClick={handleSkipClick} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">
               {locale.skip}
+            </button>
+            <button onClick={handleQuitClick} className="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition">
+              {locale.backToTop}
             </button>
           </div>
         </div>

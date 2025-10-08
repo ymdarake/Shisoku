@@ -171,6 +171,7 @@ const App: React.FC = () => {
             onCorrect={handleCorrect}
             onIncorrect={handleIncorrect}
             onSkip={handleSkip}
+            onQuit={handleBackToTop}
             locale={locale}
             questionNumber={currentQuestionIndex + 1}
             totalQuestions={TOTAL_QUESTIONS}
