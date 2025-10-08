@@ -1,17 +1,22 @@
-import { describe, it, vi, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { RankingScreen } from '../../component/RankingScreen'
+import { RankingServiceProvider } from '../../context/RankingServiceContext'
+import type { RankingRepository } from '../../domain/ranking/RankingRepository'
 
-// Mock repoGetRankings to control data per difficulty
-vi.mock('../../services/ranking', () => ({
-    repoGetRankings: async (difficulty?: 'easy' | 'normal' | 'hard') => {
-        if (difficulty === 'easy') return Promise.resolve([{ name: 'E', score: 1, time: 10, date: '2025-01-01' }])
-        if (difficulty === 'hard') return Promise.resolve([{ name: 'H', score: 9, time: 30, date: '2025-01-01' }])
-        return Promise.resolve([{ name: 'N', score: 5, time: 20, date: '2025-01-01' }])
-    },
-}))
+class StubRankingRepository implements RankingRepository {
+    async getRankings(difficulty?: 'easy' | 'normal' | 'hard') {
+        if (difficulty === 'easy') return [{ name: 'E', score: 1, time: 10, date: '2025-01-01' }]
+        if (difficulty === 'hard') return []
+        return [{ name: 'N', score: 5, time: 20, date: '2025-01-01' }]
+    }
+    async saveRanking(newEntry: any, difficulty?: 'easy' | 'normal' | 'hard') {
+        const list = await this.getRankings(difficulty)
+        return [...list, newEntry]
+    }
+}
 
 describe('RankingScreen - difficulty tabs', () => {
     const locale = {
@@ -34,12 +39,14 @@ describe('RankingScreen - difficulty tabs', () => {
 
     it('shows initial difficulty list and switches on tab click', async () => {
         render(
-            <RankingScreen
-                rankings={[{ name: 'N0', score: 2, time: 40, date: '2025-01-01' }]}
-                onBackToTop={() => { }}
-                locale={locale as any}
-                difficulty="normal"
-            />
+            <RankingServiceProvider repository={new StubRankingRepository()}>
+                <RankingScreen
+                    rankings={[{ name: 'N0', score: 2, time: 40, date: '2025-01-01' }]}
+                    onBackToTop={() => { }}
+                    locale={locale as any}
+                    difficulty="normal"
+                />
+            </RankingServiceProvider>
         )
 
         // initial shows normal label; wait for async list
@@ -50,27 +57,21 @@ describe('RankingScreen - difficulty tabs', () => {
         await userEvent.click(screen.getByRole('button', { name: /かんたん/i }))
         await screen.findByText('E')
 
-        // switch to hard
+        // switch to hard (empty)
         await userEvent.click(screen.getByRole('button', { name: /むずかしい/i }))
-        await screen.findByText('H')
+        await screen.findByText(locale.noRankings)
     })
 
     it('renders empty state when no rankings for a difficulty', async () => {
-        // Override mock for this test case: return empty for hard
-        const mod = await import('../../service/ranking')
-        // @ts-expect-error test override
-        mod.repoGetRankings = async (difficulty?: 'easy' | 'normal' | 'hard') => {
-            if (difficulty === 'hard') return Promise.resolve([])
-            return Promise.resolve([{ name: 'N', score: 5, time: 20, date: '2025-01-01' }])
-        }
-
         render(
-            <RankingScreen
-                rankings={[{ name: 'N0', score: 2, time: 40, date: '2025-01-01' }]}
-                onBackToTop={() => { }}
-                locale={locale as any}
-                difficulty="normal"
-            />
+            <RankingServiceProvider repository={new StubRankingRepository()}>
+                <RankingScreen
+                    rankings={[{ name: 'N0', score: 2, time: 40, date: '2025-01-01' }]}
+                    onBackToTop={() => { }}
+                    locale={locale as any}
+                    difficulty="normal"
+                />
+            </RankingServiceProvider>
         )
 
         // Switch to hard (empty)
@@ -80,12 +81,14 @@ describe('RankingScreen - difficulty tabs', () => {
 
     it('updates heading difficulty label on tab change', async () => {
         render(
-            <RankingScreen
-                rankings={[]}
-                onBackToTop={() => { }}
-                locale={locale as any}
-                difficulty="easy"
-            />
+            <RankingServiceProvider repository={new StubRankingRepository()}>
+                <RankingScreen
+                    rankings={[]}
+                    onBackToTop={() => { }}
+                    locale={locale as any}
+                    difficulty="easy"
+                />
+            </RankingServiceProvider>
         )
 
         // initial: easy

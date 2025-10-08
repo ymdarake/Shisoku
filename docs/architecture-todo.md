@@ -32,13 +32,13 @@
 
 ## 5) Preferences Provider 導入
 - [ ] `context/PreferencesContext.tsx` を作成
-  - RED: 初期化・更新・保存が機能する（repoLoadPreferences/repoSavePreferences をモック）
+  - RED: 初期化・更新・保存が機能する（PreferencesService をモック）
   - GREEN: 実装して `App.tsx` から移行
 
 ## 6) 取得フックの抽象化
-- [ ] `hook/useRankings.ts`（簡易キャッシュ）
+- [ ] `hook/useRanking.ts`（簡易キャッシュ）
   - RED: 難易度変更時にフェッチ/キャッシュ/ローディング表示
-  - GREEN: `repoGetRankings` 呼び出しとメモリキャッシュ
+  - GREEN: `RankingService.getRankings` 呼び出しとメモリキャッシュ
   - REFACTOR: `RankingScreen` を置換
 
 ## 7) ドメイン型の分離の徹底

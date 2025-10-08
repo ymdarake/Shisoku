@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { GameState, Language, Problem, GameResult, RankingEntry, Difficulty } from './types';
+import type { GameState, Language, Problem, GameResult, Difficulty } from './types';
+import type { RankingEntry } from './domain/ranking/type';
 import { locales } from './constant/locales';
 import { TOTAL_QUESTIONS } from './constant/game';
 import { generateProblems } from './service/gameLogic';
-import { getRankings, saveRanking, repoGetRankings, repoSaveRanking } from './service/ranking';
+import { useRankingService } from './context/RankingServiceContext';
 import { audioService } from './service/audio';
 
 import { Header } from './component/Header';
@@ -13,7 +14,7 @@ import { GameScreen } from './component/GameScreen';
 import { EndScreen } from './component/EndScreen';
 import { MessageArea } from './component/MessageArea';
 import { RankingScreen } from './component/RankingScreen';
-import { repoLoadPreferences, repoSavePreferences } from './service/preferences';
+import { usePreferencesService } from './context/PreferencesServiceContext';
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>('ja');
@@ -32,17 +33,19 @@ const App: React.FC = () => {
   const [showCountdown, setShowCountdown] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [prefsLoaded, setPrefsLoaded] = useState(false);
+  const rankingService = useRankingService();
+  const preferencesService = usePreferencesService();
 
   const locale = locales[language];
 
   useEffect(() => {
-    repoGetRankings(difficulty).then(setRankings);
-  }, [difficulty]);
+    rankingService.getRankings(difficulty).then(setRankings);
+  }, [rankingService, difficulty]);
 
   // Load user preferences on app start
   useEffect(() => {
     (async () => {
-      const prefs = await repoLoadPreferences();
+      const prefs = await preferencesService.load();
       if (prefs) {
         setLanguage(prefs.language);
         setDifficulty(prefs.difficulty);
@@ -56,13 +59,13 @@ const App: React.FC = () => {
   // Persist preferences when changed (after initial load)
   useEffect(() => {
     if (!prefsLoaded) return;
-    void repoSavePreferences({
+    void preferencesService.save({
       language,
       difficulty,
       isBgmOn,
       isSfxOn,
     });
-  }, [language, difficulty, isBgmOn, isSfxOn, prefsLoaded]);
+  }, [language, difficulty, isBgmOn, isSfxOn, prefsLoaded, preferencesService]);
 
   useEffect(() => {
     let interval: number | undefined;
@@ -172,7 +175,7 @@ const App: React.FC = () => {
       time: elapsedTime,
       date: new Date().toISOString(),
     };
-    repoSaveRanking(newEntry, difficulty).then(setRankings);
+    rankingService.saveRanking(newEntry, difficulty).then(setRankings);
     setGameState('ranking');
   };
 

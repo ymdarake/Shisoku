@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { repoLoadPreferences, repoSavePreferences } from '../../service/preferences'
-import type { UserPreferences } from '../../types'
+import type { UserPreferences } from '../../domain/preferences/type'
+import { PreferencesService } from '../../service/PreferencesService'
+import { LocalStoragePreferencesRepository } from '../../repository/localStorage/LocalStoragePreferencesRepository'
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -22,14 +23,16 @@ const localStorageMock = (() => {
 // @ts-expect-error assign to global
 global.localStorage = localStorageMock as Storage
 
-describe('preferences repository (localStorage)', () => {
+describe('preferences service (via DI)', () => {
+    let svc: PreferencesService
     beforeEach(() => {
         localStorageMock.clear()
         vi.clearAllMocks()
+        svc = new PreferencesService(new LocalStoragePreferencesRepository())
     })
 
     it('should return null when no preferences are stored', async () => {
-        const loaded = await repoLoadPreferences()
+        const loaded = await svc.load()
         expect(loaded).toBeNull()
     })
 
@@ -40,14 +43,14 @@ describe('preferences repository (localStorage)', () => {
             language: 'en',
             difficulty: 'hard',
         }
-        await repoSavePreferences(prefs)
-        const loaded = await repoLoadPreferences()
+        await svc.save(prefs)
+        const loaded = await svc.load()
         expect(loaded).toEqual(prefs)
     })
 
     it('should handle invalid JSON gracefully and return null', async () => {
         localStorage.setItem('mathPuzzlePreferences:v1', 'not json')
-        const loaded = await repoLoadPreferences()
+        const loaded = await svc.load()
         expect(loaded).toBeNull()
     })
 })
