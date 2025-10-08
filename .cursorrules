@@ -1,7 +1,8 @@
 # Cursor Rules
 
 - すべてのコード生成・編集時は、必ず次のドキュメントの内容と整合するようにしてください：
-  - /Users/ymdarake/.claude/CLAUDE.md
+  - $HOME/.claude/CLAUDE.md
+  - （補助）docs/react-data-architecture.md
 
 - 方針:
   - 日本語で応答すること。
