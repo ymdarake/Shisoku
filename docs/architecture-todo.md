@@ -22,11 +22,11 @@
 - [x] `__tests__/repository/preferences.contract.test.ts` を作成（`runPreferencesContract(repoFactory)`）
 
 ## 4) UseCase レイヤ（薄い）
-- [ ] `usecase/saveScore.ts`（ランキング保存 + 難易度 + 日付付与）
+- [x] `usecase/saveScore.ts`（ランキング保存 + 難易度 + 日付付与）
   - RED: Repository モックで保存結果を検証
   - GREEN: Repository 経由で保存し配列返却
   - REFACTOR: Clock を DI
-- [ ] `usecase/loadRankings.ts`（難易度別取得）
+- [x] `usecase/loadRankings.ts`（難易度別取得）
   - RED: 難易度渡しで対応データ
   - GREEN: Repository 経由で取得
 
@@ -36,9 +36,9 @@
   - GREEN: 実装して `App.tsx` から移行
 
 ## 6) 取得フックの抽象化
-- [ ] `hook/useRanking.ts`（簡易キャッシュ）
+- [x] `hook/useRanking.ts`（簡易キャッシュ）
   - RED: 難易度変更時にフェッチ/キャッシュ/ローディング表示
-  - GREEN: `RankingService.getRankings` 呼び出しとメモリキャッシュ
+  - GREEN: `RankingRepository.getRankings` 呼び出しとメモリキャッシュ
   - REFACTOR: `RankingScreen` を置換
 
 ## 7) ドメイン型の分離の徹底

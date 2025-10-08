@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LocalStorageRankingRepository } from '../../repository/localStorage/LocalStorageRankingRepository';
 import { InMemoryRankingRepository } from '../../repository/memory/InMemoryRankingRepository';
-import { RankingService } from '../../service/RankingService';
+import type { RankingRepository } from '../../domain/ranking/RankingRepository';
 import type { RankingEntry } from '../../domain/ranking/type';
 
 // Mock localStorage
@@ -24,18 +24,18 @@ const localStorageMock = (() => {
 
 global.localStorage = localStorageMock as Storage;
 
-describe('ranking service (via RankingService DI)', () => {
-  let svc: RankingService;
+describe('ranking repository behavior (via DI)', () => {
+  let repo: RankingRepository;
   beforeEach(() => {
     localStorageMock.clear();
     vi.clearAllMocks();
     // Default: LocalStorage implementation for persistence behavior tests
-    svc = new RankingService(new LocalStorageRankingRepository());
+    repo = new LocalStorageRankingRepository();
   });
 
   describe('getRankings', () => {
     it('should return empty array when no rankings exist', async () => {
-      const rankings = await svc.getRankings();
+      const rankings = await repo.getRankings();
       expect(rankings).toEqual([]);
     });
 
@@ -46,14 +46,14 @@ describe('ranking service (via RankingService DI)', () => {
       ];
       localStorage.setItem('mathPuzzleRanking', JSON.stringify(mockRankings));
 
-      const rankings = await svc.getRankings();
+      const rankings = await repo.getRankings();
       expect(rankings).toEqual(mockRankings);
     });
 
     it('should return empty array when localStorage contains invalid JSON', async () => {
       localStorage.setItem('mathPuzzleRanking', 'invalid json');
 
-      const rankings = await svc.getRankings();
+      const rankings = await repo.getRankings();
       expect(rankings).toEqual([]);
     });
   });
@@ -66,7 +66,7 @@ describe('ranking service (via RankingService DI)', () => {
         date: '2025-01-01',
       };
 
-      const result = await svc.saveRanking(newEntry);
+      const result = await repo.saveRanking(newEntry);
 
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual(newEntry);
@@ -77,9 +77,9 @@ describe('ranking service (via RankingService DI)', () => {
       const entry2: RankingEntry = { score: 10, time: 100, date: '2025-01-02' };
       const entry3: RankingEntry = { score: 7, time: 100, date: '2025-01-03' };
 
-      await svc.saveRanking(entry1);
-      await svc.saveRanking(entry2);
-      const result = await svc.saveRanking(entry3);
+      await repo.saveRanking(entry1);
+      await repo.saveRanking(entry2);
+      const result = await repo.saveRanking(entry3);
 
       expect(result[0].score).toBe(10);
       expect(result[1].score).toBe(7);
@@ -91,9 +91,9 @@ describe('ranking service (via RankingService DI)', () => {
       const entry2: RankingEntry = { score: 8, time: 100, date: '2025-01-02' };
       const entry3: RankingEntry = { score: 8, time: 200, date: '2025-01-03' };
 
-      await svc.saveRanking(entry1);
-      await svc.saveRanking(entry2);
-      const result = await svc.saveRanking(entry3);
+      await repo.saveRanking(entry1);
+      await repo.saveRanking(entry2);
+      const result = await repo.saveRanking(entry3);
 
       expect(result[0].time).toBe(100);
       expect(result[1].time).toBe(150);
@@ -103,14 +103,14 @@ describe('ranking service (via RankingService DI)', () => {
     it('should keep only top 10 entries', async () => {
       // Add 12 entries
       for (let i = 0; i < 12; i++) {
-        await svc.saveRanking({
+        await repo.saveRanking({
           score: i,
           time: 100,
           date: `2025-01-${String(i + 1).padStart(2, '0')}`,
         });
       }
 
-      const rankings = await svc.getRankings();
+      const rankings = await repo.getRankings();
       expect(rankings).toHaveLength(10);
       // Should keep the highest scores (11, 10, 9, ...)
       expect(rankings[0].score).toBe(11);
@@ -120,7 +120,7 @@ describe('ranking service (via RankingService DI)', () => {
     it('should persist rankings to localStorage', async () => {
       const entry: RankingEntry = { score: 7, time: 120, date: '2025-01-01' };
 
-      await svc.saveRanking(entry);
+      await repo.saveRanking(entry);
 
       const stored = localStorage.getItem('mathPuzzleRanking');
       expect(stored).not.toBeNull();
@@ -139,7 +139,7 @@ describe('ranking service (via RankingService DI)', () => {
       const entry: RankingEntry = { score: 5, time: 100, date: '2025-01-01' };
 
       // Should not throw
-      await expect(svc.saveRanking(entry)).resolves.toBeDefined();
+      await expect(repo.saveRanking(entry)).resolves.toBeDefined();
 
       // Restore original setItem
       localStorage.setItem = originalSetItem;
@@ -149,14 +149,14 @@ describe('ranking service (via RankingService DI)', () => {
   describe('difficulty-aware rankings', () => {
     it('stores and reads rankings separately per difficulty (InMemory)', async () => {
       // Use in-memory repository to isolate localStorage side-effects
-      svc = new RankingService(new InMemoryRankingRepository());
-      await svc.saveRanking({ score: 3, time: 90, date: '2025-01-01' }, 'easy');
-      await svc.saveRanking({ score: 5, time: 80, date: '2025-01-01' }, 'normal');
-      await svc.saveRanking({ score: 7, time: 70, date: '2025-01-01' }, 'hard');
+      repo = new InMemoryRankingRepository();
+      await repo.saveRanking({ score: 3, time: 90, date: '2025-01-01' }, 'easy');
+      await repo.saveRanking({ score: 5, time: 80, date: '2025-01-01' }, 'normal');
+      await repo.saveRanking({ score: 7, time: 70, date: '2025-01-01' }, 'hard');
 
-      const easy = await svc.getRankings('easy');
-      const normal = await svc.getRankings('normal');
-      const hard = await svc.getRankings('hard');
+      const easy = await repo.getRankings('easy');
+      const normal = await repo.getRankings('normal');
+      const hard = await repo.getRankings('hard');
 
       expect(easy).toHaveLength(1);
       expect(normal).toHaveLength(1);

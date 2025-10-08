@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { RankingScreen } from '../../component/RankingScreen'
-import { RankingServiceProvider } from '../../context/RankingServiceContext'
+import { RankingRepositoryProvider } from '../../context/RankingRepositoryContext'
 import type { RankingRepository } from '../../domain/ranking/RankingRepository'
 
 class StubRankingRepository implements RankingRepository {
@@ -39,14 +39,14 @@ describe('RankingScreen - difficulty tabs', () => {
 
     it('shows initial difficulty list and switches on tab click', async () => {
         render(
-            <RankingServiceProvider repository={new StubRankingRepository()}>
+            <RankingRepositoryProvider repository={new StubRankingRepository()}>
                 <RankingScreen
                     rankings={[{ name: 'N0', score: 2, time: 40, date: '2025-01-01' }]}
                     onBackToTop={() => { }}
                     locale={locale as any}
                     difficulty="normal"
                 />
-            </RankingServiceProvider>
+            </RankingRepositoryProvider>
         )
 
         // initial shows normal label; wait for async list
@@ -64,14 +64,14 @@ describe('RankingScreen - difficulty tabs', () => {
 
     it('renders empty state when no rankings for a difficulty', async () => {
         render(
-            <RankingServiceProvider repository={new StubRankingRepository()}>
+            <RankingRepositoryProvider repository={new StubRankingRepository()}>
                 <RankingScreen
                     rankings={[{ name: 'N0', score: 2, time: 40, date: '2025-01-01' }]}
                     onBackToTop={() => { }}
                     locale={locale as any}
                     difficulty="normal"
                 />
-            </RankingServiceProvider>
+            </RankingRepositoryProvider>
         )
 
         // Switch to hard (empty)
@@ -81,14 +81,14 @@ describe('RankingScreen - difficulty tabs', () => {
 
     it('updates heading difficulty label on tab change', async () => {
         render(
-            <RankingServiceProvider repository={new StubRankingRepository()}>
+            <RankingRepositoryProvider repository={new StubRankingRepository()}>
                 <RankingScreen
                     rankings={[]}
                     onBackToTop={() => { }}
                     locale={locale as any}
                     difficulty="easy"
                 />
-            </RankingServiceProvider>
+            </RankingRepositoryProvider>
         )
 
         // initial: easy

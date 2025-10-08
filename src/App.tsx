@@ -4,7 +4,7 @@ import type { RankingEntry } from './domain/ranking/type';
 import { locales } from './constant/locales';
 import { TOTAL_QUESTIONS } from './constant/game';
 import { generateProblems } from './service/gameLogic';
-import { useRankingService } from './context/RankingServiceContext';
+import { useRankingRepository } from './context/RankingRepositoryContext';
 import { audioService } from './service/audio';
 
 import { Header } from './component/Header';
@@ -14,7 +14,7 @@ import { GameScreen } from './component/GameScreen';
 import { EndScreen } from './component/EndScreen';
 import { MessageArea } from './component/MessageArea';
 import { RankingScreen } from './component/RankingScreen';
-import { usePreferencesService } from './context/PreferencesServiceContext';
+import { usePreferencesRepository } from './context/PreferencesRepositoryContext';
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>('ja');
@@ -33,19 +33,19 @@ const App: React.FC = () => {
   const [showCountdown, setShowCountdown] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [prefsLoaded, setPrefsLoaded] = useState(false);
-  const rankingService = useRankingService();
-  const preferencesService = usePreferencesService();
+  const rankingRepository = useRankingRepository();
+  const preferencesRepository = usePreferencesRepository();
 
   const locale = locales[language];
 
   useEffect(() => {
-    rankingService.getRankings(difficulty).then(setRankings);
-  }, [rankingService, difficulty]);
+    rankingRepository.getRankings(difficulty).then(setRankings);
+  }, [rankingRepository, difficulty]);
 
   // Load user preferences on app start
   useEffect(() => {
     (async () => {
-      const prefs = await preferencesService.load();
+      const prefs = await preferencesRepository.load();
       if (prefs) {
         setLanguage(prefs.language);
         setDifficulty(prefs.difficulty);
@@ -59,13 +59,13 @@ const App: React.FC = () => {
   // Persist preferences when changed (after initial load)
   useEffect(() => {
     if (!prefsLoaded) return;
-    void preferencesService.save({
+    void preferencesRepository.save({
       language,
       difficulty,
       isBgmOn,
       isSfxOn,
     });
-  }, [language, difficulty, isBgmOn, isSfxOn, prefsLoaded, preferencesService]);
+  }, [language, difficulty, isBgmOn, isSfxOn, prefsLoaded, preferencesRepository]);
 
   useEffect(() => {
     let interval: number | undefined;
@@ -175,7 +175,7 @@ const App: React.FC = () => {
       time: elapsedTime,
       date: new Date().toISOString(),
     };
-    rankingService.saveRanking(newEntry, difficulty).then(setRankings);
+    rankingRepository.saveRanking(newEntry, difficulty).then(setRankings);
     setGameState('ranking');
   };
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Difficulty } from '../types';
 import type { RankingEntry } from '../domain/ranking/type';
 import { formatTime } from '../utils/formatTime';
-import { useRankingService } from '../context/RankingServiceContext';
+import { useRankingRepository } from '../context/RankingRepositoryContext';
 
 interface RankingScreenProps {
   rankings: RankingEntry[]; // 初期表示用（現在の難易度）
@@ -14,7 +14,7 @@ interface RankingScreenProps {
 export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackToTop, locale, difficulty = 'normal' }) => {
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(difficulty);
   const [list, setList] = useState<RankingEntry[]>(rankings);
-  const rankingService = useRankingService();
+  const rankingRepository = useRankingRepository();
 
   useEffect(() => {
     setSelectedDifficulty(difficulty);
@@ -22,8 +22,8 @@ export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackTo
   }, [difficulty, rankings]);
 
   useEffect(() => {
-    rankingService.getRankings(selectedDifficulty).then(setList);
-  }, [rankingService, selectedDifficulty]);
+    rankingRepository.getRankings(selectedDifficulty).then(setList);
+  }, [rankingRepository, selectedDifficulty]);
 
   const difficultyLabel =
     selectedDifficulty === 'easy' ? locale.difficultyEasy : selectedDifficulty === 'hard' ? locale.difficultyHard : locale.difficultyNormal;
