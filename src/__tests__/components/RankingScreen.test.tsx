@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { RankingScreen } from '../../components/RankingScreen'
 
-// Mock getRankings to control data per difficulty
+// Mock repoGetRankings to control data per difficulty
 vi.mock('../../services/ranking', () => ({
-    getRankings: (difficulty?: 'easy' | 'normal' | 'hard') => {
+    repoGetRankings: (difficulty?: 'easy' | 'normal' | 'hard') => {
         if (difficulty === 'easy') return [{ name: 'E', score: 1, time: 10, date: '2025-01-01' }]
         if (difficulty === 'hard') return [{ name: 'H', score: 9, time: 30, date: '2025-01-01' }]
         return [{ name: 'N', score: 5, time: 20, date: '2025-01-01' }]

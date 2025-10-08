@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { RankingEntry, Difficulty } from '../types';
 import { formatTime } from '../utils/formatTime';
-import { getRankings } from '../services/ranking';
+import { repoGetRankings } from '../services/ranking';
 
 interface RankingScreenProps {
   rankings: RankingEntry[]; // 初期表示用（現在の難易度）
@@ -20,8 +20,7 @@ export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackTo
   }, [difficulty, rankings]);
 
   useEffect(() => {
-    const fetched = getRankings(selectedDifficulty);
-    setList(fetched);
+    repoGetRankings(selectedDifficulty).then(setList);
   }, [selectedDifficulty]);
 
   const difficultyLabel =

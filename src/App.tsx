@@ -3,7 +3,7 @@ import type { GameState, Language, Problem, GameResult, RankingEntry, Difficulty
 import { locales } from './constants/locales';
 import { TOTAL_QUESTIONS } from './constants/game';
 import { generateProblems } from './services/gameLogic';
-import { getRankings, saveRanking } from './services/ranking';
+import { getRankings, saveRanking, repoGetRankings, repoSaveRanking } from './services/ranking';
 import { audioService } from './services/audio';
 
 import { Header } from './components/Header';
@@ -34,7 +34,7 @@ const App: React.FC = () => {
   const locale = locales[language];
 
   useEffect(() => {
-    setRankings(getRankings(difficulty));
+    repoGetRankings(difficulty).then(setRankings);
   }, [difficulty]);
 
   useEffect(() => {
@@ -145,8 +145,7 @@ const App: React.FC = () => {
       time: elapsedTime,
       date: new Date().toISOString(),
     };
-    const updatedRankings = saveRanking(newEntry, difficulty);
-    setRankings(updatedRankings);
+    repoSaveRanking(newEntry, difficulty).then(setRankings);
     setGameState('ranking');
   };
 
