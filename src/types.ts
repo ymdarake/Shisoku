@@ -48,3 +48,10 @@ export interface DifficultyConfig {
   targetRange: [number, number];
   label: string;
 }
+
+export interface UserPreferences {
+  isBgmOn: boolean;
+  isSfxOn: boolean;
+  language: Language;
+  difficulty: Difficulty;
+}

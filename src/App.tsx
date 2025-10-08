@@ -13,6 +13,7 @@ import { GameScreen } from './components/GameScreen';
 import { EndScreen } from './components/EndScreen';
 import { MessageArea } from './components/MessageArea';
 import { RankingScreen } from './components/RankingScreen';
+import { repoLoadPreferences, repoSavePreferences } from './services/preferences';
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>('ja');
@@ -30,12 +31,38 @@ const App: React.FC = () => {
   const [allProblems, setAllProblems] = useState<Problem[]>([]);
   const [showCountdown, setShowCountdown] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
+  const [prefsLoaded, setPrefsLoaded] = useState(false);
 
   const locale = locales[language];
 
   useEffect(() => {
     repoGetRankings(difficulty).then(setRankings);
   }, [difficulty]);
+
+  // Load user preferences on app start
+  useEffect(() => {
+    (async () => {
+      const prefs = await repoLoadPreferences();
+      if (prefs) {
+        setLanguage(prefs.language);
+        setDifficulty(prefs.difficulty);
+        setIsBgmOn(prefs.isBgmOn);
+        setIsSfxOn(prefs.isSfxOn);
+      }
+      setPrefsLoaded(true);
+    })();
+  }, []);
+
+  // Persist preferences when changed (after initial load)
+  useEffect(() => {
+    if (!prefsLoaded) return;
+    void repoSavePreferences({
+      language,
+      difficulty,
+      isBgmOn,
+      isSfxOn,
+    });
+  }, [language, difficulty, isBgmOn, isSfxOn, prefsLoaded]);
 
   useEffect(() => {
     let interval: number | undefined;

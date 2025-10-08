@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, vi, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
@@ -6,10 +6,10 @@ import { RankingScreen } from '../../components/RankingScreen'
 
 // Mock repoGetRankings to control data per difficulty
 vi.mock('../../services/ranking', () => ({
-    repoGetRankings: (difficulty?: 'easy' | 'normal' | 'hard') => {
-        if (difficulty === 'easy') return [{ name: 'E', score: 1, time: 10, date: '2025-01-01' }]
-        if (difficulty === 'hard') return [{ name: 'H', score: 9, time: 30, date: '2025-01-01' }]
-        return [{ name: 'N', score: 5, time: 20, date: '2025-01-01' }]
+    repoGetRankings: async (difficulty?: 'easy' | 'normal' | 'hard') => {
+        if (difficulty === 'easy') return Promise.resolve([{ name: 'E', score: 1, time: 10, date: '2025-01-01' }])
+        if (difficulty === 'hard') return Promise.resolve([{ name: 'H', score: 9, time: 30, date: '2025-01-01' }])
+        return Promise.resolve([{ name: 'N', score: 5, time: 20, date: '2025-01-01' }])
     },
 }))
 
@@ -42,17 +42,17 @@ describe('RankingScreen - difficulty tabs', () => {
             />
         )
 
-        // initial shows normal data
+        // initial shows normal label; wait for async list
         expect(screen.getByText('ふつう')).toBeInTheDocument()
-        expect(screen.getByText('N')).toBeInTheDocument()
+        await screen.findByText('N')
 
         // switch to easy
         await userEvent.click(screen.getByRole('button', { name: /かんたん/i }))
-        expect(screen.getByText('E')).toBeInTheDocument()
+        await screen.findByText('E')
 
         // switch to hard
         await userEvent.click(screen.getByRole('button', { name: /むずかしい/i }))
-        expect(screen.getByText('H')).toBeInTheDocument()
+        await screen.findByText('H')
     })
 })
 
