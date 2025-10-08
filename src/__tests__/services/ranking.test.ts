@@ -140,4 +140,24 @@ describe('ranking service', () => {
       localStorage.setItem = originalSetItem;
     });
   });
+
+  describe('difficulty-aware rankings', () => {
+    it('stores and reads rankings separately per difficulty', () => {
+      saveRanking({ score: 3, time: 90, date: '2025-01-01' }, 'easy');
+      saveRanking({ score: 5, time: 80, date: '2025-01-01' }, 'normal');
+      saveRanking({ score: 7, time: 70, date: '2025-01-01' }, 'hard');
+
+      const easy = getRankings('easy');
+      const normal = getRankings('normal');
+      const hard = getRankings('hard');
+
+      expect(easy).toHaveLength(1);
+      expect(normal).toHaveLength(1);
+      expect(hard).toHaveLength(1);
+
+      expect(easy[0].score).toBe(3);
+      expect(normal[0].score).toBe(5);
+      expect(hard[0].score).toBe(7);
+    });
+  });
 });
