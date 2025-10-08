@@ -19,6 +19,7 @@ describe('GameScreen - keyboard number input (Phase 1 - Red)', () => {
       question: '問題',
       skip: 'スキップ',
       backToTop: 'トップに戻る',
+      confirmQuit: 'プレイを中断してトップに戻りますか？',
     },
     questionNumber: 1,
     totalQuestions: 10,
@@ -111,6 +112,7 @@ describe('GameScreen - special keys (Phase 3 - Red)', () => {
       question: '問題',
       skip: 'スキップ',
       backToTop: 'トップに戻る',
+      confirmQuit: 'プレイを中断してトップに戻りますか？',
     },
     questionNumber: 1,
     totalQuestions: 10,
@@ -208,6 +210,7 @@ describe('GameScreen - accessibility (Phase 4)', () => {
       question: '問題',
       skip: 'スキップ',
       backToTop: 'トップに戻る',
+      confirmQuit: 'プレイを中断してトップに戻りますか？',
     },
     questionNumber: 1,
     totalQuestions: 10,
@@ -245,8 +248,11 @@ describe('GameScreen - accessibility (Phase 4)', () => {
     const quitButton = screen.getByRole('button', { name: /トップに戻る/i });
     expect(quitButton).toBeInTheDocument();
 
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     await userEvent.click(quitButton);
+    expect(confirmSpy).toHaveBeenCalledWith(baseProps.locale.confirmQuit);
     expect(baseProps.onQuit).toHaveBeenCalled();
+    confirmSpy.mockRestore();
   });
 });
 

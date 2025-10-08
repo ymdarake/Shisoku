@@ -54,6 +54,7 @@ export const locales: Locales = {
     bgmOff: 'BGM OFF',
     sfxOn: '効果音 ON',
     sfxOff: '効果音 OFF',
+    confirmQuit: 'プレイを中断してトップに戻りますか？',
   },
   en: {
     title: 'Math Puzzle Game',
@@ -108,5 +109,6 @@ export const locales: Locales = {
     bgmOff: 'BGM OFF',
     sfxOn: 'SFX ON',
     sfxOff: 'SFX OFF',
+    confirmQuit: 'Do you want to quit and return to the top?',
   },
 };

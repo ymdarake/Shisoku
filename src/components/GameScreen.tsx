@@ -212,7 +212,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
 
   const handleQuitClick = () => {
     onPlayClickSound();
-    onQuit();
+    const ok = window.confirm(locale.confirmQuit as string);
+    if (ok) onQuit();
   }
 
   return (
@@ -227,6 +228,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clipRule="evenodd" />
           </svg>
           <span aria-label={`経過時間 ${formatTime(elapsedTime)}`}>{formatTime(elapsedTime)}</span>
+        </div>
+        <div>
+          <button onClick={handleQuitClick} className="px-3 py-1 text-sm bg-gray-700 text-white rounded-md shadow hover:bg-gray-800 transition">
+            {locale.backToTop}
+          </button>
         </div>
       </div>
 
@@ -252,9 +258,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
           <div className="mt-4 flex space-x-3">
             <button onClick={handleSkipClick} className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">
               {locale.skip}
-            </button>
-            <button onClick={handleQuitClick} className="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition">
-              {locale.backToTop}
             </button>
           </div>
         </div>
