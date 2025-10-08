@@ -7,7 +7,7 @@ interface ProblemDisplayProps {
   locale: { [key: string]: any };
 }
 
-export const ProblemDisplay: React.FC<ProblemDisplayProps> = ({ problem, locale }) => {
+export const ProblemDisplay: React.FC<ProblemDisplayProps> = React.memo(({ problem, locale }) => {
   return (
     <div className="w-full max-w-md mx-auto my-4 space-y-4">
       <div>
@@ -28,4 +28,4 @@ export const ProblemDisplay: React.FC<ProblemDisplayProps> = ({ problem, locale 
       </div>
     </div>
   );
-};
+});

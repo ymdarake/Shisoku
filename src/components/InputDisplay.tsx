@@ -5,7 +5,7 @@ interface InputDisplayProps {
   expression: string;
 }
 
-export const InputDisplay: React.FC<InputDisplayProps> = ({ expression }) => {
+export const InputDisplay: React.FC<InputDisplayProps> = React.memo(({ expression }) => {
   return (
     <div
       data-testid="input-display"
@@ -17,4 +17,4 @@ export const InputDisplay: React.FC<InputDisplayProps> = ({ expression }) => {
       {expression || <span className="text-gray-400 dark:text-gray-500">...</span>}
     </div>
   );
-};
+});

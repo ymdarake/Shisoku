@@ -6,7 +6,7 @@ interface MessageAreaProps {
   type: 'info' | 'success' | 'error' | 'loading';
 }
 
-export const MessageArea: React.FC<MessageAreaProps> = ({ message, type }) => {
+export const MessageArea: React.FC<MessageAreaProps> = React.memo(({ message, type }) => {
   const baseClasses = "w-full max-w-md mx-auto my-2 p-3 text-center rounded-lg font-semibold transition-all duration-300";
   const typeClasses = {
     info: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200',
@@ -20,4 +20,4 @@ export const MessageArea: React.FC<MessageAreaProps> = ({ message, type }) => {
       {message && <div className={`${baseClasses} ${typeClasses[type]}`}>{message}</div>}
     </div>
   );
-};
+});
