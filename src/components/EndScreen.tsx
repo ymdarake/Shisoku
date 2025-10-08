@@ -44,29 +44,29 @@ export const EndScreen: React.FC<EndScreenProps> = ({ results, onPlayAgain, onBa
         <button
           onClick={handleShare}
           className="flex items-center space-x-2 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition"
-          aria-label="スコアをTwitter/Xでシェア"
+          aria-label={locale.shareScoreAria}
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
-          <span>スコアをシェア</span>
+          <span>{locale.shareScore}</span>
         </button>
       </div>
 
       <div className="max-w-md mx-auto my-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <label htmlFor="name-input" className="block text-center font-medium mb-2">{locale.enterYourName}</label>
         <div className="flex items-center space-x-2">
-            <input 
-                id="name-input"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Player"
-                className="flex-grow px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <button onClick={handleSave} disabled={!name.trim()} className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed">
-                {locale.saveScore}
-            </button>
+          <input
+            id="name-input"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Player"
+            className="flex-grow px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <button onClick={handleSave} disabled={!name.trim()} className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+            {locale.saveScore}
+          </button>
         </div>
       </div>
 
