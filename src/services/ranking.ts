@@ -1,11 +1,12 @@
-import type { RankingEntry } from '../types';
+import type { RankingEntry, Difficulty } from '../types';
 
 const RANKING_KEY = 'mathPuzzleRanking';
+const keyFor = (difficulty?: Difficulty) => (difficulty ? `${RANKING_KEY}:${difficulty}` : RANKING_KEY);
 const MAX_RANKING_ENTRIES = 10;
 
-export const getRankings = (): RankingEntry[] => {
+export const getRankings = (difficulty?: Difficulty): RankingEntry[] => {
   try {
-    const rankingsJson = localStorage.getItem(RANKING_KEY);
+    const rankingsJson = localStorage.getItem(keyFor(difficulty));
     if (!rankingsJson) {
       return [];
     }
@@ -26,8 +27,8 @@ export const getRankings = (): RankingEntry[] => {
   }
 };
 
-export const saveRanking = (newEntry: RankingEntry): RankingEntry[] => {
-  const rankings = getRankings();
+export const saveRanking = (newEntry: RankingEntry, difficulty?: Difficulty): RankingEntry[] => {
+  const rankings = getRankings(difficulty);
   rankings.push(newEntry);
 
   // Sort by score (desc), then time (asc)
@@ -41,7 +42,7 @@ export const saveRanking = (newEntry: RankingEntry): RankingEntry[] => {
   const updatedRankings = rankings.slice(0, MAX_RANKING_ENTRIES);
 
   try {
-    localStorage.setItem(RANKING_KEY, JSON.stringify(updatedRankings));
+    localStorage.setItem(keyFor(difficulty), JSON.stringify(updatedRankings));
   } catch (error) {
     // Log as warning to avoid failing CI due to console.error policies
     console.warn("Failed to save rankings to localStorage", error);

@@ -1,17 +1,20 @@
 import React from 'react';
-import type { RankingEntry } from '../types';
+import type { RankingEntry, Difficulty } from '../types';
 import { formatTime } from '../utils/formatTime';
 
 interface RankingScreenProps {
   rankings: RankingEntry[];
   onBackToTop: () => void;
   locale: { [key: string]: any };
+  difficulty?: Difficulty;
 }
 
-export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackToTop, locale }) => {
+export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackToTop, locale, difficulty = 'normal' }) => {
+  const difficultyLabel =
+    difficulty === 'easy' ? locale.difficultyEasy : difficulty === 'hard' ? locale.difficultyHard : locale.difficultyNormal;
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-6">{locale.ranking}</h2>
+      <h2 className="text-3xl font-bold text-center mb-6">{`${locale.ranking} (${difficultyLabel})`}</h2>
 
       {rankings.length > 0 ? (
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden mb-8">

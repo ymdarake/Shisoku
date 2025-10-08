@@ -34,8 +34,8 @@ const App: React.FC = () => {
   const locale = locales[language];
 
   useEffect(() => {
-    setRankings(getRankings());
-  }, []);
+    setRankings(getRankings(difficulty));
+  }, [difficulty]);
 
   useEffect(() => {
     let interval: number | undefined;
@@ -145,7 +145,7 @@ const App: React.FC = () => {
       time: elapsedTime,
       date: new Date().toISOString(),
     };
-    const updatedRankings = saveRanking(newEntry);
+    const updatedRankings = saveRanking(newEntry, difficulty);
     setRankings(updatedRankings);
     setGameState('ranking');
   };
@@ -195,7 +195,7 @@ const App: React.FC = () => {
         />;
       case 'ranking':
         // FIX: Corrected typo in prop name from `onBackTo-Top` to `onBackToTop`.
-        return <RankingScreen rankings={rankings} onBackToTop={handleBackToTop} locale={locale} />;
+        return <RankingScreen rankings={rankings} onBackToTop={handleBackToTop} locale={locale} difficulty={difficulty} />;
       case 'idle':
       default:
         return <StartScreen onStart={handleStartGame} onShowRanking={handleShowRanking} locale={locale} difficulty={difficulty} onSelectDifficulty={setDifficulty} />;
