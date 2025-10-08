@@ -49,7 +49,7 @@ const App: React.FC = () => {
       }
     };
   }, [gameState, startTime]);
-  
+
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
   };
@@ -96,7 +96,7 @@ const App: React.FC = () => {
     setResults(prev => [...prev, { problem: currentProblem, userAnswer, isCorrect: true, skipped: false }]);
     handleNextQuestion();
   };
-  
+
   const handleIncorrect = (userAnswer: string) => {
     if (!currentProblem) return;
     setResults(prev => [...prev, { problem: currentProblem, userAnswer, isCorrect: false, skipped: false }]);
@@ -108,7 +108,7 @@ const App: React.FC = () => {
     setResults(prev => [...prev, { problem: currentProblem, userAnswer: '', isCorrect: false, skipped: true }]);
     handleNextQuestion();
   };
-  
+
   const handleBackToTop = () => {
     setGameState('idle');
     audioService.stopBgm();
@@ -117,19 +117,19 @@ const App: React.FC = () => {
   const handleShowRanking = () => {
     setGameState('ranking');
   };
-  
+
   const handleToggleBgm = () => {
-      setIsBgmOn(audioService.toggleBgm());
+    setIsBgmOn(audioService.toggleBgm());
   }
-  
+
   const handleToggleSfx = () => {
-      setIsSfxOn(audioService.toggleSfx());
+    setIsSfxOn(audioService.toggleSfx());
   }
-  
+
   const playClickSound = useCallback(() => audioService.playClickSound(), []);
   const playCorrectSound = useCallback(() => audioService.playCorrectSound(), []);
   const playIncorrectSound = useCallback(() => audioService.playIncorrectSound(), []);
-  
+
   const handleInvalidAction = useCallback(() => {
     audioService.playInvalidActionSound();
     setIsShaking(true);
@@ -160,7 +160,7 @@ const App: React.FC = () => {
     }
 
     if (isLoading) {
-        return <MessageArea message={locale.generatingProblem as string} type="loading" />;
+      return <MessageArea message={locale.generatingProblem as string} type="loading" />;
     }
 
     switch (gameState) {
@@ -182,15 +182,15 @@ const App: React.FC = () => {
           />
         ) : null;
       case 'finished':
-        return <EndScreen 
-                  results={results} 
-                  onPlayAgain={handleStartGame} 
-                  onBackToTop={handleBackToTop}
-                  onSaveRanking={handleSaveRanking}
-                  locale={locale}
-                  totalQuestions={TOTAL_QUESTIONS}
-                  totalTime={elapsedTime}
-               />;
+        return <EndScreen
+          results={results}
+          onPlayAgain={handleStartGame}
+          onBackToTop={handleBackToTop}
+          onSaveRanking={handleSaveRanking}
+          locale={locale}
+          totalQuestions={TOTAL_QUESTIONS}
+          totalTime={elapsedTime}
+        />;
       case 'ranking':
         // FIX: Corrected typo in prop name from `onBackTo-Top` to `onBackToTop`.
         return <RankingScreen rankings={rankings} onBackToTop={handleBackToTop} locale={locale} />;
@@ -217,7 +217,7 @@ const App: React.FC = () => {
         {renderContent()}
       </main>
       <footer className="text-center p-4 text-xs text-gray-500 dark:text-gray-400">
-        &copy; 2024 Math Puzzle Game
+        <a href="https://github.com/ymdarake/" target="_blank" rel="noopener noreferrer">&copy; 2025 ymdarake</a>
       </footer>
     </div>
   );
