@@ -23,12 +23,7 @@ export interface Locales {
   en: Locale;
 }
 
-export interface RankingEntry {
-  name: string;
-  score: number;
-  time: number; // in seconds
-  date: string;
-}
+// moved to domain/ranking/types.ts
 
 /**
  * 式を構成するトークン（数字または演算子）
@@ -49,9 +44,4 @@ export interface DifficultyConfig {
   label: string;
 }
 
-export interface UserPreferences {
-  isBgmOn: boolean;
-  isSfxOn: boolean;
-  language: Language;
-  difficulty: Difficulty;
-}
+// moved to domain/preferences/types.ts

@@ -54,5 +54,46 @@ describe('RankingScreen - difficulty tabs', () => {
         await userEvent.click(screen.getByRole('button', { name: /むずかしい/i }))
         await screen.findByText('H')
     })
+
+    it('renders empty state when no rankings for a difficulty', async () => {
+        // Override mock for this test case: return empty for hard
+        const mod = await import('../../services/ranking')
+        // @ts-expect-error test override
+        mod.repoGetRankings = async (difficulty?: 'easy' | 'normal' | 'hard') => {
+            if (difficulty === 'hard') return Promise.resolve([])
+            return Promise.resolve([{ name: 'N', score: 5, time: 20, date: '2025-01-01' }])
+        }
+
+        render(
+            <RankingScreen
+                rankings={[{ name: 'N0', score: 2, time: 40, date: '2025-01-01' }]}
+                onBackToTop={() => { }}
+                locale={locale as any}
+                difficulty="normal"
+            />
+        )
+
+        // Switch to hard (empty)
+        await userEvent.click(screen.getByRole('button', { name: /むずかしい/i }))
+        await screen.findByText(locale.noRankings)
+    })
+
+    it('updates heading difficulty label on tab change', async () => {
+        render(
+            <RankingScreen
+                rankings={[]}
+                onBackToTop={() => { }}
+                locale={locale as any}
+                difficulty="easy"
+            />
+        )
+
+        // initial: easy
+        expect(screen.getByText(/ランキング \(かんたん\)/)).toBeInTheDocument()
+
+        // change to normal
+        await userEvent.click(screen.getByRole('button', { name: /ふつう/i }))
+        expect(await screen.findByText(/ランキング \(ふつう\)/)).toBeInTheDocument()
+    })
 })
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import type { RankingEntry, Difficulty } from '../types';
+import type { Difficulty } from '../types';
+import type { RankingEntry } from '../domain/ranking/types';
 import { formatTime } from '../utils/formatTime';
 import { repoGetRankings } from '../services/ranking';
 

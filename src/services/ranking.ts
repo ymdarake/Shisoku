@@ -1,4 +1,5 @@
-import type { RankingEntry, Difficulty } from '../types';
+import type { Difficulty } from '../types';
+import type { RankingEntry } from '../domain/ranking/types';
 import type { RankingRepository } from '../domain/ranking/RankingRepository';
 import { LocalStorageRankingRepository } from '../repositories/localStorage/LocalStorageRankingRepository';
 

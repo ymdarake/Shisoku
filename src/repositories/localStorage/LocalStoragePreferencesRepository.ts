@@ -1,5 +1,5 @@
 import type { PreferencesRepository } from '../../domain/preferences/PreferencesRepository';
-import type { UserPreferences } from '../../types';
+import type { UserPreferences } from '../../domain/preferences/types';
 
 const KEY = 'mathPuzzlePreferences:v1';
 
