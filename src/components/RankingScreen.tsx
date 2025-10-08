@@ -1,22 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { RankingEntry, Difficulty } from '../types';
 import { formatTime } from '../utils/formatTime';
+import { getRankings } from '../services/ranking';
 
 interface RankingScreenProps {
-  rankings: RankingEntry[];
+  rankings: RankingEntry[]; // 初期表示用（現在の難易度）
   onBackToTop: () => void;
   locale: { [key: string]: any };
   difficulty?: Difficulty;
 }
 
 export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackToTop, locale, difficulty = 'normal' }) => {
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(difficulty);
+  const [list, setList] = useState<RankingEntry[]>(rankings);
+
+  useEffect(() => {
+    setSelectedDifficulty(difficulty);
+    setList(rankings);
+  }, [difficulty, rankings]);
+
+  useEffect(() => {
+    const fetched = getRankings(selectedDifficulty);
+    setList(fetched);
+  }, [selectedDifficulty]);
+
   const difficultyLabel =
-    difficulty === 'easy' ? locale.difficultyEasy : difficulty === 'hard' ? locale.difficultyHard : locale.difficultyNormal;
+    selectedDifficulty === 'easy' ? locale.difficultyEasy : selectedDifficulty === 'hard' ? locale.difficultyHard : locale.difficultyNormal;
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <h2 className="text-3xl font-bold text-center mb-6">{`${locale.ranking} (${difficultyLabel})`}</h2>
 
-      {rankings.length > 0 ? (
+      {/* 難易度タブ */}
+      <div className="flex justify-center mb-4 space-x-2">
+        <button
+          onClick={() => setSelectedDifficulty('easy')}
+          className={`px-3 py-1 rounded-md text-sm font-semibold transition ${selectedDifficulty === 'easy' ? 'bg-green-600 text-white' : 'bg-green-100 dark:bg-green-900/30'}`}
+        >
+          {locale.difficultyEasy}
+        </button>
+        <button
+          onClick={() => setSelectedDifficulty('normal')}
+          className={`px-3 py-1 rounded-md text-sm font-semibold transition ${selectedDifficulty === 'normal' ? 'bg-blue-600 text-white' : 'bg-blue-100 dark:bg-blue-900/30'}`}
+        >
+          {locale.difficultyNormal}
+        </button>
+        <button
+          onClick={() => setSelectedDifficulty('hard')}
+          className={`px-3 py-1 rounded-md text-sm font-semibold transition ${selectedDifficulty === 'hard' ? 'bg-red-600 text-white' : 'bg-red-100 dark:bg-red-900/30'}`}
+        >
+          {locale.difficultyHard}
+        </button>
+      </div>
+
+      {list.length > 0 ? (
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden mb-8">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -30,7 +66,7 @@ export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackTo
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {rankings.map((entry, index) => (
+                {list.map((entry, index) => (
                   <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold">{index + 1}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{entry.name}</td>
