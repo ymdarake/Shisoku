@@ -212,6 +212,7 @@ const App: React.FC = () => {
         onToggleBgm={handleToggleBgm}
         onToggleSfx={handleToggleSfx}
         locale={locale}
+        onTitleClick={handleBackToTop}
       />
       <main className="flex-grow container mx-auto p-4">
         {renderContent()}
