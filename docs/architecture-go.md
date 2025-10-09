@@ -8,6 +8,37 @@
     - ↓ Domain（Repository 抽象/Entity/Value）
       - ↓ Infrastructure（実装: DB/FS/HTTP/Memory 等）
 
+### ディレクトリ構造（例）
+```
+cmd/app/                        # エントリポイント（main）
+internal/
+  interface/                   # ハンドラ/CLI等の入出力境界
+    http/
+      handler.go
+    cli/
+      command.go
+  application/                 # UseCase
+    usecase/
+      save_score.go
+      load_rankings.go
+  domain/                      # 抽象・モデル
+    ranking/
+      entity.go
+      repository.go           // interface RankingRepository
+      types.go
+  infrastructure/              # 具体実装
+    ranking/
+      memory/
+        repository.go
+      file/
+        repository.go
+      db/
+        repository.go
+  shared/
+    clock/
+      clock.go
+```
+
 ### Domain 抽象（例）
 ```go
 type Difficulty string

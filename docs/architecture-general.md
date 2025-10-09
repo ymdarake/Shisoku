@@ -15,6 +15,35 @@
 
 依存は常に上から下へ一方向。Presentation は Repository の具体型を知らず、Application（UseCase）経由で抽象に触れます。
 
+### ディレクトリ構造（例）
+```
+app/
+  presentation/                # UI/CLI/APIハンドラなど入出力境界
+    cli/
+    http/
+    ui/
+  application/                 # UseCase（手続き集約）
+    usecase/
+      save_score.ts
+      load_rankings.ts
+  domain/                      # 抽象・モデル
+    ranking/
+      entity.ts
+      repository.ts            # RankingRepository 抽象
+      types.ts
+  infrastructure/              # 具体実装（差し替え可能）
+    ranking/
+      memory/
+        repository.ts
+      file/
+        repository.ts
+      http/
+        repository.ts
+  shared/
+    clock.ts                   # Cross-cutting（Clockなど）
+  main.ts                      # Composition Root（依存生成/束ね）
+```
+
 ### 主要インターフェイス例（概念）
 ```ts
 // Domain

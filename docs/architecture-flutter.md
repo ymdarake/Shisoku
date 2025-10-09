@@ -8,6 +8,35 @@
     - ↓ Domain（Repository 抽象/Entity/Value）
       - ↓ Infrastructure（実装: SharedPreferences/Isar/HTTP/Memory 等）
 
+### ディレクトリ構造（例）
+```
+lib/
+  presentation/                 // Widget/Route/State管理（Riverpod/BLoC等）
+    pages/
+    widgets/
+    providers/
+  application/                  // UseCase
+    usecase/
+      save_score.dart
+      load_rankings.dart
+  domain/                       // 抽象・モデル
+    ranking/
+      ranking_entry.dart
+      ranking_repository.dart   // 抽象
+      types.dart
+  infrastructure/               // 具体実装
+    ranking/
+      shared_prefs/
+        ranking_repository.dart
+      http/
+        ranking_repository.dart
+      memory/
+        ranking_repository.dart
+  shared/
+    clock.dart
+  main.dart                     // Composition Root（Provider束ね）
+```
+
 ### 依存注入（例）
 - Riverpod（または get_it）を利用して Composition Root で依存を束ねる。
 
