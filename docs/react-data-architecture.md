@@ -41,14 +41,151 @@ class LocalStorageRankingRepository implements RankingRepository {
 
 ### UseCase（薄いアプリケーションユースケース）
 - 役割: 画面に依存しないアプリケーション操作を手続きとしてまとめる（日時付与、引数整形、バリデーションなど）
-- 例: `saveScore` と `loadRankings`
+- 例: `SaveScoreUseCase` と `LoadRankingsUseCase`
 
 ```ts
-export const saveScore = async (deps, score, time, name, difficulty) => {
-  const entry = { name, score, time, date: deps.clock.now().toISOString() };
-  return deps.rankingRepository.saveRanking(entry, difficulty);
+// saveScore（クラス実装）
+export class SaveScoreUseCase {
+  constructor(private readonly clock: Clock = systemClock) {}
+  async execute(repo: RankingRepository, entry: Omit<RankingEntry, 'date'> | RankingEntry, difficulty?: Difficulty) {
+    const withDate: RankingEntry = { ...entry, date: (entry as RankingEntry).date ?? this.clock.nowISO() } as RankingEntry;
+    return repo.saveRanking(withDate, difficulty);
+  }
+}
+
+
+// loadRankings（クラス実装）
+export class LoadRankingsUseCase {
+  execute(repo: RankingRepository, difficulty?: Difficulty) {
+    return repo.getRankings(difficulty);
+  }
+}
+
+```
+
+### UseCase の利用例（View/Hook/テスト）
+
+#### 1) Component から直接呼び出す
+- Context から `RankingRepository` を取得し、UseCase クラスの `execute` を利用します。
+
+```tsx
+import { useCallback } from 'react';
+import { useRankingRepository } from '../src/context/RankingRepositoryContext';
+import { SaveScoreUseCase } from '../src/usecase/saveScore';
+import type { Difficulty } from '../src/types';
+
+type Props = { name: string; score: number; time: number; difficulty: Difficulty };
+
+export const SubmitScoreButton: React.FC<Props> = ({ name, score, time, difficulty }) => {
+  const rankingRepository = useRankingRepository();
+
+  const onClick = useCallback(async () => {
+    await new SaveScoreUseCase().execute(rankingRepository, { name, score, time }, difficulty);
+    // 成功後は必要に応じてトースト/画面遷移など
+  }, [rankingRepository, name, score, time, difficulty]);
+
+  return (
+    <button onClick={onClick} className="btn-primary">Save</button>
+  );
 };
 ```
+
+ランキングを表示したい場合は `LoadRankingsUseCase` を使います。
+
+```ts
+import { useEffect, useState } from 'react';
+import { useRankingRepository } from '../src/context/RankingRepositoryContext';
+import { LoadRankingsUseCase } from '../src/usecase/loadRankings';
+import type { Difficulty } from '../src/types';
+
+export const useRankingList = (difficulty: Difficulty) => {
+  const rankingRepository = useRankingRepository();
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    new LoadRankingsUseCase().execute(rankingRepository, difficulty)
+      .then((r) => mounted && setList(r))
+      .catch((e) => mounted && setError(e))
+      .finally(() => mounted && setLoading(false));
+    return () => {
+      mounted = false;
+    };
+  }, [rankingRepository, difficulty]);
+
+  return { list, loading, error };
+};
+```
+
+#### 2) Hook で UseCase をラップする
+- 画面横断で再利用したい場合、UseCase 呼び出しを小さな Hook に閉じ込めます。
+
+```ts
+import { useCallback } from 'react';
+import { useRankingRepository } from '../src/context/RankingRepositoryContext';
+import { SaveScoreUseCase } from '../src/usecase/saveScore';
+import type { Difficulty } from '../src/types';
+
+export const useSaveScore = () => {
+  const rankingRepository = useRankingRepository();
+
+  const run = useCallback(
+    async (params: { name: string; score: number; time: number; difficulty?: Difficulty }) => {
+      const { name, score, time, difficulty } = params;
+      return new SaveScoreUseCase().execute(rankingRepository, { name, score, time }, difficulty);
+    },
+    [rankingRepository]
+  );
+
+  return { run };
+};
+```
+
+#### 3) テストでの利用（依存差し替え）
+- Repository をテスト用実装（InMemory）に差し替え、Clock も固定して副作用を検証します。
+
+```ts
+import { describe, it, expect } from 'vitest';
+import { InMemoryRankingRepository } from '../src/repository/memory/InMemoryRankingRepository';
+import { SaveScoreUseCase } from '../src/usecase/saveScore';
+
+describe('usecase/saveScore', () => {
+  it('adds ISO date when missing and saves via repository', async () => {
+    const repo = new InMemoryRankingRepository();
+    const fixedISO = '2025-01-01T00:00:00.000Z';
+    const result = await new SaveScoreUseCase({ nowISO: () => fixedISO }).execute(
+      repo,
+      { name: 'X', score: 2, time: 10 },
+      'normal'
+    );
+    expect(result[0].date).toBe(fixedISO);
+  });
+});
+```
+
+ポイント:
+- View は UseCase を直接呼ぶか、専用 Hook に委譲します。
+- 依存は Context 経由で注入（Repository/Clock を外部化）し、テストで差し替え可能にします。
+
+### UseCase を使うメリット（Repository 直呼びとの比較）
+
+- **関心の分離（UI の単純化）**: UI からデータ整形や日付付与などの手続きを取り除き、描画に専念できる。
+  - 例: `App.tsx` では `date` の付与をやめ、`new SaveScoreUseCase().execute(repo, { name, score, time }, difficulty)` に集約。
+- **ポリシーの一元化**: 日付付与・バリデーション・整形・並び順ポリシーなどを UseCase に閉じ込めることで、複数画面での実装ブレを防止。
+- **テスト容易性の向上**: UseCase を単体でテスト（Clock を固定、Repository を InMemory に差し替え）でき、UI の結合テストに依存しない。
+- **変更の局所化**: 仕様変更（例えば日時の扱い・重複データの解決・ランキング更新規則など）が UseCase のみの修正で済み、呼び出し側に波及しにくい。
+- **実装差し替えへの耐性**: Repository の実装（LocalStorage → API）を変えても、UseCase を境に UI が安定。移行時の影響範囲が最小化。
+- **依存注入（DI）の活用**: Repository/Clock を引数で受けることで、実行環境ごとの依存（本番/テスト）を柔軟に切替可能。
+- **観測/ロギングの集約ポイント**: 監査ログやメトリクスを UseCase へ集約することで、重複なく網羅的な観測を実現。
+- **エラーハンドリングポリシーの統一**: 例外→UI 表示/リトライ方針の橋渡しを一箇所で定義可能。UI ごとのバラつきを抑止。
+- **セキュリティ/初期化順序の順守**: 初期化順や副作用の扱いを UseCase 経由で担保しやすい。
+
+小さな Before/After（概念比較）:
+- Before（Repository 直呼び）: UI 側で `date` 生成や整形を都度実装 → 画面数に比例して重複・差異が増える
+- After（UseCase）: `new SaveScoreUseCase().execute(repo, entry, difficulty)` が `date` 付与などを一括実行 → UI から手続きが消え、実装の均一性が上がる
 
 ### DI と Composition Root（アプリ起動時の依存注入）
 - `src/index.tsx` で具体 Repository を生成し、Context Provider に注入
