@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Difficulty } from '../types'
 import type { RankingEntry } from '../domain/ranking/type'
 import { useRankingRepository } from '../context/RankingRepositoryContext'
+import { LoadRankingsUseCase } from '../usecase/loadRankings'
 
 export function useRanking(difficulty: Difficulty) {
     const repo = useRankingRepository()
@@ -18,7 +19,8 @@ export function useRanking(difficulty: Difficulty) {
             return
         }
         setLoading(true)
-        repo.getRankings(difficulty).then(res => {
+        const uc = new LoadRankingsUseCase()
+        uc.execute(repo, difficulty).then(res => {
             if (!active) return
             cacheRef.current.set(key, res)
             setList(res)

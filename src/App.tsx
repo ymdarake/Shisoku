@@ -5,6 +5,8 @@ import { locales } from './constant/locales';
 import { TOTAL_QUESTIONS } from './constant/game';
 import { generateProblems } from './service/gameLogic';
 import { useRankingRepository } from './context/RankingRepositoryContext';
+import { LoadRankingsUseCase } from './usecase/loadRankings';
+import { SaveScoreUseCase } from './usecase/saveScore';
 import { audioService } from './service/audio';
 
 import { Header } from './component/Header';
@@ -39,7 +41,8 @@ const App: React.FC = () => {
   const locale = locales[language];
 
   useEffect(() => {
-    rankingRepository.getRankings(difficulty).then(setRankings);
+    const uc = new LoadRankingsUseCase()
+    uc.execute(rankingRepository, difficulty).then(setRankings);
   }, [rankingRepository, difficulty]);
 
   // Load user preferences on app start
@@ -169,13 +172,9 @@ const App: React.FC = () => {
 
   const handleSaveRanking = (name: string) => {
     const score = results.filter(r => r.isCorrect).length;
-    const newEntry: RankingEntry = {
-      name,
-      score,
-      time: elapsedTime,
-      date: new Date().toISOString(),
-    };
-    rankingRepository.saveRanking(newEntry, difficulty).then(setRankings);
+    const entry = { name, score, time: elapsedTime } as Omit<RankingEntry, 'date'>;
+    const uc = new SaveScoreUseCase()
+    uc.execute(rankingRepository, entry, difficulty).then(setRankings);
     setGameState('ranking');
   };
 
