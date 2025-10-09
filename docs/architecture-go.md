@@ -2,11 +2,22 @@
 
 本ドキュメントは Go で本リポジトリの設計方針（Repository / UseCase / DI）を実現するためのガイドです。`~/.claude/CLAUDE.md` の規定（命名、依存方向、初期化順序、セキュリティ）を優先します。
 
+### 目的
+- Handler（入出力）からデータ操作を切り離し、テストしやすくする
+- 保存方法（DB/FS/HTTP/Memory）の差し替えを容易にする
+- 日付付与・検証・整形などのアプリ手続きを UseCase に集めて一貫性を保つ
+
 ### レイヤ構成
 - Interface Adapter（HTTP Handler/CLIなどの入出力）
   - ↓ Application（UseCase）
     - ↓ Domain（Repository 抽象/Entity/Value）
       - ↓ Infrastructure（実装: DB/FS/HTTP/Memory 等）
+
+### 各レイヤの役割
+- Interface Adapter: HTTP/CLI等の入出力。要求/応答の形式変換に集中し、ビジネス手続きは UseCase へ委譲します。
+- Application（UseCase）: アプリ固有の手続きの置き場。日時付与、入力整形、並び順などをここに集めます。
+- Domain: ルールと抽象（`RankingRepository` など）を定義。技術詳細から独立しています。
+- Infrastructure: 実データアクセス（DB/FS/HTTP/Memory）。Domain のインターフェイスに従い、差し替え可能です。
 
 ### ディレクトリ構造（例）
 ```

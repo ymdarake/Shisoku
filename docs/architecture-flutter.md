@@ -2,11 +2,22 @@
 
 本ドキュメントは Flutter で本リポジトリの設計方針（Repository / UseCase / DI）を実現するためのガイドです。`~/.claude/CLAUDE.md` の規定（命名、依存方向、初期化順序、セキュリティ）を優先します。
 
+### 目的
+- UI（Widget）をシンプルにし、データ取得/保存の手続きを外へ出す
+- 端末保存（SharedPreferences/ファイル）やHTTPなど保存先を差し替えやすくする
+- 日付付与・整形・検証などを UseCase にまとめ、画面ごとの差をなくす
+
 ### レイヤ構成
 - Presentation（Widget/StateNotifier/BLoC/Cubit など）
   - ↓ Application（UseCase）
     - ↓ Domain（Repository 抽象/Entity/Value）
       - ↓ Infrastructure（実装: SharedPreferences/Isar/HTTP/Memory 等）
+
+### 各レイヤの役割
+- Presentation: 画面（Widget）や `StateNotifier`/`BLoC` がある層。UIの状態管理と描画に集中し、データ操作は UseCase を呼ぶだけにします。
+- Application（UseCase）: アプリ固有の手続きの置き場。日付付与、入力整形、並び替えなどをひとつに集約します。
+- Domain: ルールと抽象（`RankingRepository` など）を定義。ここは技術要素から独立しています。
+- Infrastructure: 実際の保存方法（SharedPreferences/Isar/HTTPなど）を実装。Domain の抽象に従います。
 
 ### ディレクトリ構造（例）
 ```
