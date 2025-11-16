@@ -9,6 +9,9 @@ class AudioService {
   private hihat: Tone.MetalSynth | null = null;
   private bgmVolume: Tone.Volume | null = null;
   private sfxVolume: Tone.Volume | null = null;
+  private bassVolume: Tone.Volume | null = null;
+  private kickVolume: Tone.Volume | null = null;
+  private hihatVolume: Tone.Volume | null = null;
   
   private _isBgmOn = true;
   private _isSfxOn = true;
@@ -26,20 +29,23 @@ class AudioService {
         envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.4 },
       }).connect(this.bgmVolume);
 
+      this.bassVolume = new Tone.Volume(-10).toDestination();
       this.bass = new Tone.MonoSynth({
         oscillator: { type: 'fmsquare' },
         filter: { Q: 2, type: 'lowpass', rolloff: -24 },
         envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.4 },
         filterEnvelope: { attack: 0.01, decay: 0.1, sustain: 0.8, release: 0.5, baseFrequency: 200, octaves: 4 }
-      }).connect(new Tone.Volume(-10).toDestination());
-      
+      }).connect(this.bassVolume);
+
+      this.kickVolume = new Tone.Volume(-6).toDestination();
       this.kick = new Tone.MembraneSynth({
         pitchDecay: 0.05,
         octaves: 10,
         oscillator: { type: 'sine' },
         envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4, attackCurve: 'exponential' },
-      }).connect(new Tone.Volume(-6).toDestination());
+      }).connect(this.kickVolume);
 
+      this.hihatVolume = new Tone.Volume(-18).toDestination();
       this.hihat = new Tone.MetalSynth({
         frequency: 200,
         envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
@@ -47,7 +53,7 @@ class AudioService {
         modulationIndex: 32,
         resonance: 4000,
         octaves: 1.5,
-      }).connect(new Tone.Volume(-18).toDestination());
+      }).connect(this.hihatVolume);
 
       // --- SFX Instrument ---
       this.sfxSynth = new Tone.PolySynth(Tone.Synth, {
@@ -95,24 +101,26 @@ class AudioService {
   }
 
   playBgm() {
-    if (this.isInitialized && this._isBgmOn && Tone.Transport.state !== 'started') {
+    if (this.isInitialized && this._isBgmOn) {
+      // マスター出力のミュートを解除
+      Tone.Destination.mute = false;
+
+      // Transportを開始または再開
+      if (Tone.Transport.state !== 'started') {
         Tone.Transport.start();
+      }
     }
   }
 
   stopBgm() {
     if (this.isInitialized) {
-      // 1. Transportを停止してスケジュールをクリア
-      if (Tone.Transport.state === 'started') {
-        Tone.Transport.stop();
-        Tone.Transport.cancel();
-      }
+      // マスター出力を即座にミュート
+      Tone.Destination.mute = true;
 
-      // 2. 現在鳴っている音を即座に停止（releaseフェーズをスキップ）
-      this.bgmSynth?.releaseAll();
-      this.bass?.triggerRelease();
-      this.kick?.triggerRelease();
-      this.hihat?.triggerRelease();
+      // Transportを一時停止（stop()ではなくpause()を使う - stop()はSequence/Loopを破壊する）
+      if (Tone.Transport.state === 'started') {
+        Tone.Transport.pause();
+      }
     }
   }
   
