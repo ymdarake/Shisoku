@@ -81,7 +81,7 @@
 #### コード例
 ```typescript
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, orderBy, limit, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, orderBy, limit, addDoc } from 'firebase/firestore';
 
 const db = getFirestore(app);
 
@@ -106,7 +106,9 @@ await addDoc(collection(db, 'rankings'), {
 
 #### 推定コスト（月間）
 - 無料枠: 50,000 reads / 20,000 writes
-- 想定: 1,000 DAU、各5回プレイ/日
+- 想定: 1,000 DAU、各ユーザーが1日5回プレイ
+  - 各プレイで1回の書き込み（スコア保存）
+  - 各プレイ開始時に1回の読み取り（ランキング確認）
   - 読み取り: 1,000 × 5 × 30 = 150,000 reads/月 → **無料枠超過: $0.36**
   - 書き込み: 1,000 × 5 × 30 = 150,000 writes/月 → **無料枠超過: $1.80**
   - **合計: 約$2.16/月**
@@ -157,9 +159,9 @@ const { error } = await supabase
 
 #### 推定コスト（月間）
 - 無料枠: 500MB DB、5GB転送量、50,000 MAU
-- 想定: 1,000 DAU
-  - データベース: ~10MB（十分に無料枠内）
-  - 転送量: ~1GB（無料枠内）
+- 想定: 1,000 DAU、各ユーザーが1日5回プレイ
+  - データベース: ~10MB（ランキングエントリ 約50,000件想定）
+  - 転送量: ~150MB/月（1リクエスト1KB × 5回/日 × 30日 × 1,000 DAU）
   - **合計: $0/月（無料枠内）**
 - スケール後（Pro: $25/月）
 
@@ -177,29 +179,118 @@ const { error } = await supabase
 
 #### デメリット
 - ❌ リアルタイム更新はなし（定期的なポーリングが必要）
-- ❌ まだベータ版、機能が限定的
+- ❌ 比較的新しいサービス、一部機能が発展途上
 - ❌ クライアントSDKなし（Workers APIを自作）
 
 #### コード例（Cloudflare Workers）
 ```typescript
 export default {
-  async fetch(request, env) {
-    const { pathname } = new URL(request.url);
+  async fetch(request: Request, env: Env): Promise<Response> {
+    // CORS設定
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': 'https://your-app.pages.dev',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
 
-    if (pathname === '/api/rankings') {
-      const difficulty = new URL(request.url).searchParams.get('difficulty');
-      const results = await env.DB.prepare(
-        'SELECT * FROM rankings WHERE difficulty = ? ORDER BY score DESC, time ASC LIMIT 10'
-      ).bind(difficulty).all();
-      return Response.json(results);
+    // プリフライトリクエスト
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
     }
 
-    if (pathname === '/api/rankings' && request.method === 'POST') {
-      const data = await request.json();
-      await env.DB.prepare(
-        'INSERT INTO rankings (name, score, time, difficulty, date) VALUES (?, ?, ?, ?, ?)'
-      ).bind(data.name, data.score, data.time, data.difficulty, new Date().toISOString()).run();
-      return Response.json({ success: true });
+    const { pathname } = new URL(request.url);
+
+    try {
+      // GET /api/rankings
+      if (pathname === '/api/rankings' && request.method === 'GET') {
+        const url = new URL(request.url);
+        const difficulty = url.searchParams.get('difficulty');
+        const limit = parseInt(url.searchParams.get('limit') || '10');
+
+        // バリデーション
+        if (!difficulty || !['easy', 'normal', 'hard'].includes(difficulty)) {
+          return new Response(JSON.stringify({ error: 'Invalid difficulty' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const results = await env.DB.prepare(
+          'SELECT name, score, time, date FROM rankings WHERE difficulty = ? ORDER BY score DESC, time ASC LIMIT ?'
+        ).bind(difficulty, limit).all();
+
+        return new Response(JSON.stringify({ rankings: results.results }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // POST /api/rankings
+      if (pathname === '/api/rankings' && request.method === 'POST') {
+        const data = await request.json();
+
+        // バリデーション
+        if (!data.name || typeof data.score !== 'number' || typeof data.time !== 'number' || !data.difficulty) {
+          return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // スコア検証（0-10の範囲）
+        if (data.score < 0 || data.score > 10) {
+          return new Response(JSON.stringify({ error: 'Invalid score' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // 時間検証（20秒〜1時間）
+        if (data.time < 20 || data.time > 3600) {
+          return new Response(JSON.stringify({ error: 'Invalid time' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // 不正スコア検出（完璧なスコアで異常に速い場合）
+        if (data.score === 10 && data.time < 50) {
+          return new Response(JSON.stringify({ error: 'Suspicious score' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        await env.DB.prepare(
+          'INSERT INTO rankings (name, score, time, difficulty, date) VALUES (?, ?, ?, ?, ?)'
+        ).bind(
+          data.name.substring(0, 20), // 名前を20文字に制限
+          data.score,
+          data.time,
+          data.difficulty,
+          new Date().toISOString()
+        ).run();
+
+        // 現在のランクを取得
+        const rank = await env.DB.prepare(
+          'SELECT COUNT(*) as rank FROM rankings WHERE difficulty = ? AND (score > ? OR (score = ? AND time < ?))'
+        ).bind(data.difficulty, data.score, data.score, data.time).first();
+
+        return new Response(JSON.stringify({
+          success: true,
+          rank: (rank?.rank as number || 0) + 1
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      return new Response('Not Found', { status: 404, headers: corsHeaders });
+
+    } catch (error) {
+      console.error('API Error:', error);
+      return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
   }
 };
@@ -207,9 +298,9 @@ export default {
 
 #### 推定コスト（月間）
 - 無料枠: 5M reads/日、100K writes/日
-- 想定: 1,000 DAU、各5回プレイ/日
-  - 読み取り: 5,000/日（無料枠内）
-  - 書き込み: 5,000/日（無料枠内）
+- 想定: 1,000 DAU、各ユーザーが1日5回プレイ
+  - 読み取り: 1,000 × 5 = 5,000/日（月間 150,000、無料枠5M reads/日内）
+  - 書き込み: 1,000 × 5 = 5,000/日（月間 150,000、無料枠100K writes/日内）
   - **合計: $0/月（無料枠内）**
 
 ---
@@ -426,20 +517,56 @@ Response:
    ```typescript
    export class CloudflareRankingRepository implements RankingRepository {
      private apiUrl = 'https://your-worker.workers.dev/api/rankings';
+     private timeout = 5000; // 5秒
 
      async getGlobalRankings(difficulty: Difficulty): Promise<RankingEntry[]> {
-       const res = await fetch(`${this.apiUrl}?difficulty=${difficulty}&limit=10`);
-       const data = await res.json();
-       return data.rankings;
+       try {
+         const controller = new AbortController();
+         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+         const res = await fetch(`${this.apiUrl}?difficulty=${difficulty}&limit=10`, {
+           signal: controller.signal
+         });
+
+         clearTimeout(timeoutId);
+
+         if (!res.ok) {
+           throw new Error(`HTTP error! status: ${res.status}`);
+         }
+
+         const data = await res.json();
+         return data.rankings;
+       } catch (error) {
+         console.error('Failed to fetch global rankings:', error);
+         // フォールバック: 空の配列を返す
+         return [];
+       }
      }
 
      async saveToGlobalRanking(entry: Omit<RankingEntry, 'date'>, difficulty: Difficulty) {
-       const res = await fetch(this.apiUrl, {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({ ...entry, difficulty })
-       });
-       return res.json();
+       try {
+         const controller = new AbortController();
+         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+         const res = await fetch(this.apiUrl, {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ ...entry, difficulty }),
+           signal: controller.signal
+         });
+
+         clearTimeout(timeoutId);
+
+         if (!res.ok) {
+           throw new Error(`HTTP error! status: ${res.status}`);
+         }
+
+         return res.json();
+       } catch (error) {
+         console.error('Failed to save to global ranking:', error);
+         // エラーを再スローせず、失敗を示すレスポンスを返す
+         return { success: false, rank: -1 };
+       }
      }
 
      // localStorage実装も維持（ハイブリッド）
@@ -459,6 +586,8 @@ Response:
 
 ### Phase 3: セキュリティ・不正対策（4-6時間）
 
+**注意**: Rate Limitingには Cloudflare Workers KV が必要です（無料枠: 100,000 reads/日、1,000 writes/日）
+
 1. **Rate Limiting（レート制限）**
    ```typescript
    // Cloudflare Workers KV を使ったレート制限
@@ -474,8 +603,21 @@ Response:
    ```
 
 2. **スコア検証（サーバーサイド）**
-   - スコアの妥当性チェック（0-10の範囲内）
-   - 時間の妥当性チェック（最低20秒以上、最大1時間以内など）
+   ```typescript
+   const validateScore = (score: number, time: number): boolean => {
+     // スコアは0-10の範囲（問題数が10問のため）
+     if (score < 0 || score > 10) return false;
+
+     // 時間は20秒以上、3600秒（1時間）以内
+     if (time < 20 || time > 3600) return false;
+
+     // 完璧なスコア（10/10）で異常に速い場合は疑わしい
+     // 例: 各問題平均5秒以下（合計50秒未満）は不自然
+     if (score === 10 && time < 50) return false;
+
+     return true;
+   };
+   ```
 
 3. **CAPTCHA導入（オプション）**
    - Cloudflare Turnstileを使った bot 対策
@@ -499,7 +641,14 @@ Response:
 | 大規模 | 10,000 | 50,000 | 50,000 | **$0** |
 | 超大規模 | 100,000 | 500,000 | 500,000 | **$0** |
 
-※ 無料枠: 500万 reads/日、10万 writes/日
+**無料枠の詳細**:
+- 読み取り: 500万 reads/日（月間 約1.5億）
+- 書き込み: 10万 writes/日（月間 約300万）
+
+**無料枠超過時**:
+- Workers Paid ($5/月) で大幅に拡張
+  - 読み取り: 250億 reads/月（1日あたり約8.3億）
+  - 書き込み: 5000万 writes/月（1日あたり約166万）
 
 ### Firebase比較（同条件）
 
@@ -528,6 +677,7 @@ Response:
 | DDoS攻撃 | Cloudflare Rate Limiting、IPベース制限 |
 | SQLインジェクション | D1のプリペアドステートメント使用（自動エスケープ） |
 | XSS | 入力値のサニタイズ、Content Security Policy |
+| CSRF攻撃 | Originヘッダー検証、SameSite Cookie、CORS設定 |
 
 ### 3. ユーザー体験
 
@@ -580,6 +730,80 @@ Response:
 - 🎮 フレンド機能（Firebase Authenticationなど追加）
 - 🎮 スコアシェア（Twitter/X、Discord連携）
 - 🎮 実績・バッジシステム
+
+### 6. データ移行戦略
+
+#### 既存ユーザーのローカルランキングの扱い
+
+**オプション1: 自動アップロード（推奨）**
+```typescript
+// 初回起動時にlocalStorageのデータをグローバルに投稿
+const migrateLocalRankings = async () => {
+  const localRankings = localStorage.getItem('mathPuzzleRanking');
+  if (!localRankings) return;
+
+  const rankings = JSON.parse(localRankings);
+  const migrated = localStorage.getItem('rankings_migrated');
+
+  if (!migrated) {
+    // ユーザーに確認
+    if (confirm('ローカルランキングをグローバルランキングに投稿しますか？')) {
+      for (const entry of rankings.slice(0, 3)) { // トップ3のみ
+        await saveToGlobalRanking(entry);
+      }
+      localStorage.setItem('rankings_migrated', 'true');
+    }
+  }
+};
+```
+
+**オプション2: 手動投稿**
+- ランキング画面に「グローバルに投稿」ボタンを追加
+- ユーザーが任意のタイミングで投稿可能
+- プライバシーを重視するユーザーに配慮
+
+### 7. バックアップ・災害復旧
+
+#### Cloudflare D1のバックアップ
+- **自動バックアップ**: D1はレプリケーション機能あり（複数リージョン）
+- **手動バックアップ**: 週次でSQLダンプを取得
+  ```bash
+  wrangler d1 export shisoku-rankings --output=backup-$(date +%Y%m%d).sql
+  ```
+- **復旧手順**: SQLダンプから復元
+  ```bash
+  wrangler d1 import shisoku-rankings --file=backup-20251116.sql
+  ```
+
+#### フォールバック戦略
+- D1障害時はlocalStorageのみで動作（既存機能）
+- エラー時の graceful degradation
+- ユーザーには「一時的にローカルランキングのみ表示」と通知
+
+### 8. 国際化（i18n）対応
+
+#### ランキング画面のローカライゼーション
+```typescript
+// locales.ts に追加
+export const locales = {
+  ja: {
+    // ...
+    globalRanking: 'グローバルランキング',
+    myRanking: 'マイランキング',
+    postToGlobal: 'グローバルに投稿',
+    yourRank: 'あなたは {rank} 位です',
+    migrateConfirm: 'ローカルランキングをグローバルランキングに投稿しますか？',
+  },
+  en: {
+    // ...
+    globalRanking: 'Global Ranking',
+    myRanking: 'My Ranking',
+    postToGlobal: 'Post to Global',
+    yourRank: 'You are ranked #{rank}',
+    migrateConfirm: 'Would you like to post your local rankings to the global leaderboard?',
+  }
+};
+```
 
 ---
 
