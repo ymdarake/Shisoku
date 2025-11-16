@@ -3,7 +3,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { generateProblems } from './generator';
-import type { Problem } from './types';
+import type { Problem, ProblemCategory } from './types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,6 +25,10 @@ const startTime = Date.now();
 console.log('📝 問題を生成中...');
 const problems: Problem[] = generateProblems(TARGET_COUNTS);
 
+// category順でソート（no-parens → one-paren → multi-paren）
+const categoryOrder: Record<ProblemCategory, number> = { 'no-parens': 0, 'one-paren': 1, 'multi-paren': 2 };
+problems.sort((a, b) => categoryOrder[a.category] - categoryOrder[b.category]);
+
 const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
 console.log(`✓ ${problems.length}問生成完了 (${elapsed}秒)`);
 console.log('');
@@ -36,10 +40,13 @@ const stats = {
   'multi-paren': problems.filter(p => p.category === 'multi-paren').length,
 };
 
-console.log('📊 カテゴリ別内訳:');
-console.log(`  no-parens: ${stats['no-parens']}問 (${((stats['no-parens'] / problems.length) * 100).toFixed(1)}%)`);
-console.log(`  one-paren: ${stats['one-paren']}問 (${((stats['one-paren'] / problems.length) * 100).toFixed(1)}%)`);
-console.log(`  multi-paren: ${stats['multi-paren']}問 (${((stats['multi-paren'] / problems.length) * 100).toFixed(1)}%)`);
+console.log('📊 カテゴリ別内訳（行番号範囲）:');
+const noParensEnd = stats['no-parens'] + 1;
+const oneParenEnd = noParensEnd + stats['one-paren'];
+const multiParenEnd = oneParenEnd + stats['multi-paren'];
+console.log(`  no-parens: ${stats['no-parens']}問 (${((stats['no-parens'] / problems.length) * 100).toFixed(1)}%) - 行2-${noParensEnd}`);
+console.log(`  one-paren: ${stats['one-paren']}問 (${((stats['one-paren'] / problems.length) * 100).toFixed(1)}%) - 行${noParensEnd + 1}-${oneParenEnd}`);
+console.log(`  multi-paren: ${stats['multi-paren']}問 (${((stats['multi-paren'] / problems.length) * 100).toFixed(1)}%) - 行${oneParenEnd + 1}-${multiParenEnd}`);
 console.log('');
 
 // 出力先
