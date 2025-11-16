@@ -1,5 +1,8 @@
 # 四則（Shisoku） - 四則演算パズルゲーム
 
+![Test](https://github.com/ymdarake/Shisoku/actions/workflows/test.yml/badge.svg)
+![Deploy to GitHub Pages](https://github.com/ymdarake/Shisoku/actions/workflows/gh-pages.yml/badge.svg)
+
 4つの数字と四則演算（+, -, ×, ÷）を使って目標の数字を作る数学パズルゲームです。
 
 ## 特徴
