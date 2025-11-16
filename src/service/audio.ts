@@ -101,8 +101,18 @@ class AudioService {
   }
 
   stopBgm() {
-    if (this.isInitialized && Tone.Transport.state === 'started') {
+    if (this.isInitialized) {
+      // 1. Transportを停止してスケジュールをクリア
+      if (Tone.Transport.state === 'started') {
         Tone.Transport.stop();
+        Tone.Transport.cancel();
+      }
+
+      // 2. 現在鳴っている音を即座に停止（releaseフェーズをスキップ）
+      this.bgmSynth?.releaseAll();
+      this.bass?.triggerRelease();
+      this.kick?.triggerRelease();
+      this.hihat?.triggerRelease();
     }
   }
   
