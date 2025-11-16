@@ -51,7 +51,14 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-fs.writeFileSync(outputPath, JSON.stringify(problems, null, 2));
+// 1行1問のフォーマットで出力
+const lines = ['['];
+problems.forEach((p, i) => {
+  const line = JSON.stringify(p) + (i < problems.length - 1 ? ',' : '');
+  lines.push(line);
+});
+lines.push(']');
+fs.writeFileSync(outputPath, lines.join('\n'));
 
 console.log(`💾 保存完了: ${outputPath}`);
 console.log(`📦 ファイルサイズ: ${(fs.statSync(outputPath).size / 1024).toFixed(2)} KB`);
