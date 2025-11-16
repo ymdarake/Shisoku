@@ -20,9 +20,13 @@ npm preview
 
 # 依存関係のインストール
 npm install
-```
 
-**注意**: テストコマンドは未設定（テストファイルが存在しない）
+# テスト実行（Vitest）
+npm test                # テスト実行
+npm run test:ui         # テストUIモード
+npm run test:coverage   # カバレッジレポート生成
+npm run coverage:md     # カバレッジをMarkdown形式で出力
+```
 
 ## アーキテクチャ
 
@@ -170,7 +174,13 @@ npm install
 
 ### 技術的制約
 - 式評価に `new Function()` を使用（サーバーサイドレンダリング不可）
-- テストはVitest（ユニット・コンポーネントテスト導入済み）
+
+### テスト
+- **テストフレームワーク**: Vitest 3.2.4
+- **テストライブラリ**: @testing-library/react 16.3.0
+- **カバレッジツール**: @vitest/coverage-v8
+- **環境**: jsdom（ブラウザ環境のシミュレーション）
+- ユニットテスト・コンポーネントテスト導入済み
 
 ### デバッグポイント
 - Tone.js初期化エラー → ユーザーインタラクション後に `Tone.start()` を確認
