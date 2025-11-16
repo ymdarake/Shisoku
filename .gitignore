@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Problem generator
+problem-generator/dist
+
 # Test coverage
 coverage
 

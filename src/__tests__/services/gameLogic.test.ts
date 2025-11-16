@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { safeEvaluateExpression, generateProblem, generateProblems } from '../../service/gameLogic';
+import { safeEvaluateExpression } from '../../service/gameLogic';
 
 describe('safeEvaluateExpression', () => {
   describe('正常系', () => {
@@ -64,89 +64,5 @@ describe('safeEvaluateExpression', () => {
     it('should evaluate zero result', () => {
       expect(safeEvaluateExpression('5 - 5')).toBe(0);
     });
-  });
-});
-
-describe('generateProblem', () => {
-  it('should generate a valid problem', () => {
-    const problem = generateProblem();
-    expect(problem).not.toBeNull();
-    expect(problem?.numbers).toHaveLength(4);
-    expect(problem?.target).toBeGreaterThanOrEqual(0);
-    expect(problem?.target).toBeLessThanOrEqual(9);
-  });
-
-  it('should generate numbers between 0 and 9', () => {
-    const problem = generateProblem();
-    expect(problem).not.toBeNull();
-    problem?.numbers.forEach(num => {
-      expect(num).toBeGreaterThanOrEqual(0);
-      expect(num).toBeLessThanOrEqual(9);
-    });
-  });
-
-  it('should generate integer target', () => {
-    const problem = generateProblem();
-    expect(problem).not.toBeNull();
-    expect(Number.isInteger(problem?.target)).toBe(true);
-  });
-
-  it('should generate different problems on multiple calls', () => {
-    const problem1 = generateProblem();
-    const problem2 = generateProblem();
-
-    // At least one of the problems should be different (statistically very likely)
-    const areDifferent =
-      JSON.stringify(problem1?.numbers) !== JSON.stringify(problem2?.numbers) ||
-      problem1?.target !== problem2?.target;
-
-    expect(areDifferent).toBe(true);
-  });
-});
-
-describe('generateProblems', () => {
-  it('should generate the specified number of problems', () => {
-    const count = 5;
-    const problems = generateProblems(count);
-    expect(problems).toHaveLength(count);
-  });
-
-  it('should generate 10 problems for a full game', () => {
-    const problems = generateProblems(10);
-    expect(problems).toHaveLength(10);
-  });
-
-  it('should generate zero problems when count is 0', () => {
-    const problems = generateProblems(0);
-    expect(problems).toHaveLength(0);
-  });
-
-  it('should generate valid problems', () => {
-    const problems = generateProblems(3);
-    problems.forEach(problem => {
-      expect(problem.numbers).toHaveLength(4);
-      expect(problem.target).toBeGreaterThanOrEqual(0);
-      expect(problem.target).toBeLessThanOrEqual(9);
-      expect(Number.isInteger(problem.target)).toBe(true);
-    });
-  });
-});
-
-describe('difficulty ranges (Red first)', () => {
-  it('easy: numbers should be within 0-5', () => {
-    const problem = generateProblem('easy');
-    expect(problem).not.toBeNull();
-    if (problem) {
-      expect(problem.numbers.every(n => n >= 0 && n <= 5)).toBe(true);
-    }
-  });
-
-  it('hard: target should be within 0-20', () => {
-    const problem = generateProblem('hard');
-    expect(problem).not.toBeNull();
-    if (problem) {
-      expect(problem.target).toBeGreaterThanOrEqual(0);
-      expect(problem.target).toBeLessThanOrEqual(20);
-    }
   });
 });

@@ -1,6 +1,9 @@
+export type ProblemCategory = 'no-parens' | 'one-paren' | 'multi-paren';
+
 export interface Problem {
   numbers: number[];
   target: number;
+  category?: ProblemCategory; // オプション: 問題データベースから読み込まれた問題に含まれる
 }
 
 export interface GameResult {

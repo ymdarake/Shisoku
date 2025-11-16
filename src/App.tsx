@@ -3,7 +3,7 @@ import type { GameState, Language, Problem, GameResult, Difficulty } from './typ
 import type { RankingEntry } from './domain/ranking/type';
 import { locales } from './constant/locales';
 import { TOTAL_QUESTIONS } from './constant/game';
-import { generateProblems } from './service/gameLogic';
+import { getProblems } from './service/problemDatabase';
 import { useRankingRepository } from './context/RankingRepositoryContext';
 import { LoadRankingsUseCase } from './usecase/loadRankings';
 import { SaveScoreUseCase } from './usecase/saveScore';
@@ -94,7 +94,7 @@ const App: React.FC = () => {
     // Generate all problems during countdown
     setIsLoading(true);
     setTimeout(() => {
-      const problems = generateProblems(TOTAL_QUESTIONS, difficulty);
+      const problems = getProblems(difficulty, TOTAL_QUESTIONS);
       setAllProblems(problems);
       setIsLoading(false);
     }, 100);
