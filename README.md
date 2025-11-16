@@ -122,6 +122,7 @@
 - **[アーキテクチャ](docs/architecture.md)** - システム設計、ディレクトリ構成、コアロジックの詳細
 - **[ゲーム仕様](docs/game-specification.md)** - ルール、ゲームフロー、スコアリング、音楽・効果音
 - **[拡張の展望](docs/future-roadmap.md)** - 短期・中期・長期の機能追加計画、技術的改善
+- **[ランキングDB保存の検討](docs/ranking-database-proposal.md)** - グローバルランキング実装の技術選択と設計提案
 - **[Claude Code 向けガイド](.claude/CLAUDE.md)** - AI アシスタント用のプロジェクト情報
 
 ## AI Studio連携
