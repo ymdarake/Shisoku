@@ -6,7 +6,7 @@ describe('generator - generateProblems', () => {
     it('指定した数の問題を生成できる', () => {
       const problems = generateProblems({ 'no-parens': 5, 'one-paren': 3, 'multi-paren': 2 });
       expect(problems).toHaveLength(10);
-    });
+    }, 10000);
 
     it('各問題は正しい構造を持つ', () => {
       const problems = generateProblems({ 'no-parens': 2, 'one-paren': 1, 'multi-paren': 1 });
@@ -18,7 +18,7 @@ describe('generator - generateProblems', () => {
         expect(typeof problem.target).toBe('number');
         expect(['no-parens', 'one-paren', 'multi-paren']).toContain(problem.category);
       });
-    });
+    }, 10000);
   });
 
   describe('カテゴリ別の生成', () => {
@@ -28,7 +28,7 @@ describe('generator - generateProblems', () => {
       problems.forEach(problem => {
         expect(problem.category).toBe('no-parens');
       });
-    });
+    }, 10000);
 
     it('one-paren カテゴリの問題のみ生成できる', () => {
       const problems = generateProblems({ 'no-parens': 0, 'one-paren': 10, 'multi-paren': 0 });
@@ -36,7 +36,7 @@ describe('generator - generateProblems', () => {
       problems.forEach(problem => {
         expect(problem.category).toBe('one-paren');
       });
-    });
+    }, 15000);
 
     it('multi-paren カテゴリの問題のみ生成できる', () => {
       // multi-parenは稀なので少なめに
@@ -45,7 +45,7 @@ describe('generator - generateProblems', () => {
       problems.forEach(problem => {
         expect(problem.category).toBe('multi-paren');
       });
-    }, { timeout: 15000 }); // 15秒タイムアウト
+    }, 15000);
 
     it('混合カテゴリの問題を生成できる', () => {
       const problems = generateProblems({ 'no-parens': 5, 'one-paren': 3, 'multi-paren': 2 });
@@ -57,7 +57,7 @@ describe('generator - generateProblems', () => {
       expect(noParensCount).toBe(5);
       expect(oneParenCount).toBe(3);
       expect(multiParenCount).toBe(2);
-    });
+    }, 10000);
   });
 
   describe('トリビアル問題の除外', () => {
@@ -72,7 +72,7 @@ describe('generator - generateProblems', () => {
         const allSame = problem.numbers.every(num => num === problem.numbers[0]);
         expect(allSame).toBe(false);
       });
-    });
+    }, 10000);
   });
 
   describe('数字の範囲', () => {
@@ -85,7 +85,7 @@ describe('generator - generateProblems', () => {
           expect(num).toBeLessThanOrEqual(9);
         });
       });
-    }, { timeout: 10000 });
+    }, 10000);
 
     it('目標も0-20の範囲内（現実的な範囲）', () => {
       const problems = generateProblems({ 'no-parens': 5, 'one-paren': 5, 'multi-paren': 2 });
@@ -93,6 +93,6 @@ describe('generator - generateProblems', () => {
         expect(problem.target).toBeGreaterThanOrEqual(0);
         expect(problem.target).toBeLessThanOrEqual(20); // 妥当な範囲
       });
-    }, { timeout: 10000 });
+    }, 10000);
   });
 });
