@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Problem, Token } from '../types';
 import { safeEvaluateExpression } from '../service/gameLogic';
+import { audioService } from '../service/audio';
 import { useKeyboardInput } from '../hooks/useKeyboardInput';
 import { isNumberKey, toOperator } from '../constant/keyboardMap';
 import { ANSWER_JUDGMENT_DELAY_MS } from '../constant/game';
@@ -212,8 +213,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({ problem, onCorrect, onIn
 
   const handleQuitClick = () => {
     onPlayClickSound();
+
+    // confirmダイアログが表示されている間もBGMが鳴り続けるため、事前に停止
+    audioService.stopBgm();
+
     const ok = window.confirm(locale.confirmQuit as string);
-    if (ok) onQuit();
+
+    if (ok) {
+      onQuit();  // 状態をidleに戻す
+    } else {
+      // キャンセル時はBGMを再開
+      audioService.playBgm();
+    }
   }
 
   return (
