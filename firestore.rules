@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ランキングコレクションのルール
+    match /rankings/{rankingId} {
+      // 読み取り: 全員可能（ランキングは公開情報）
+      allow read: if true;
+
+      // 書き込み: バリデーション付きで全員可能
+      allow create: if request.resource.data.keys().hasAll(['name', 'score', 'time', 'difficulty', 'date', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 20
+                    && request.resource.data.score is int
+                    && request.resource.data.score >= 0
+                    && request.resource.data.score <= 10
+                    && request.resource.data.time is int
+                    && request.resource.data.time >= 20
+                    && request.resource.data.time <= 3600
+                    && request.resource.data.difficulty is string
+                    && request.resource.data.difficulty in ['easy', 'normal', 'hard']
+                    && request.resource.data.date is string
+                    && request.resource.data.createdAt is timestamp;
+
+      // 更新・削除: 禁止（ランキングは一度保存したら変更不可）
+      allow update, delete: if false;
+    }
+  }
+}

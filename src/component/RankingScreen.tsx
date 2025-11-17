@@ -3,6 +3,7 @@ import type { Difficulty } from '../types';
 import type { RankingEntry } from '../domain/ranking/type';
 import { formatTime } from '../utils/formatTime';
 import { useRankingRepository } from '../context/RankingRepositoryContext';
+import type { FirebaseRankingRepository } from '../repository/firebase/FirebaseRankingRepository';
 
 interface RankingScreenProps {
   rankings: RankingEntry[]; // 初期表示用（現在の難易度）
@@ -23,6 +24,19 @@ export const RankingScreen: React.FC<RankingScreenProps> = ({ rankings, onBackTo
 
   useEffect(() => {
     rankingRepository.getRankings(selectedDifficulty).then(setList);
+  }, [rankingRepository, selectedDifficulty]);
+
+  // リアルタイム購読（Firebaseの場合のみ）
+  useEffect(() => {
+    if ('subscribeToRankings' in rankingRepository) {
+      const unsubscribe = (rankingRepository as FirebaseRankingRepository).subscribeToRankings(
+        selectedDifficulty,
+        (newRankings) => setList(newRankings)
+      );
+      return () => {
+        if (unsubscribe) unsubscribe();
+      };
+    }
   }, [rankingRepository, selectedDifficulty]);
 
   const difficultyLabel =
