@@ -19,11 +19,19 @@ export const EndScreen: React.FC<EndScreenProps> = ({ results, onPlayAgain, onBa
   const [name, setName] = useState('');
   const score = results.filter(r => r.isCorrect).length;
 
+  // マルチバイト文字（絵文字など）を正しくカウント
+  const getCharacterCount = (str: string): number => {
+    return Array.from(str).length;
+  };
+
   const handleSave = () => {
-    if (name.trim()) {
-      onSaveRanking(name.trim());
+    const trimmedName = name.trim();
+    if (trimmedName && getCharacterCount(trimmedName) <= 20) {
+      onSaveRanking(trimmedName);
     }
   };
+
+  const isNameValid = name.trim().length > 0 && getCharacterCount(name.trim()) <= 20;
 
   const handleShare = () => {
     openTwitterShare({
@@ -60,18 +68,29 @@ export const EndScreen: React.FC<EndScreenProps> = ({ results, onPlayAgain, onBa
 
       <div className="max-w-md mx-auto my-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <label htmlFor="name-input" className="block text-center font-medium mb-2">{locale.enterYourName}</label>
-        <div className="flex items-center space-x-2">
-          <input
-            id="name-input"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Player"
-            className="flex-grow px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <button onClick={handleSave} disabled={!name.trim()} className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed">
-            {locale.saveScore}
-          </button>
+        <div className="flex flex-col space-y-2">
+          <div className="flex items-center space-x-2">
+            <input
+              id="name-input"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Player"
+              className="flex-grow px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button
+              onClick={handleSave}
+              disabled={!isNameValid}
+              className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {locale.saveScore}
+            </button>
+          </div>
+          {name.trim() && getCharacterCount(name.trim()) > 20 && (
+            <p className="text-sm text-red-500 text-center">
+              {locale.nameTooLong || '名前は20文字以内にしてください'}
+            </p>
+          )}
         </div>
       </div>
 

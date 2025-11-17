@@ -69,8 +69,14 @@ export class FirebaseRankingRepository implements RankingRepository {
     }
 
     try {
+      // マルチバイト文字（絵文字など）を正しく扱う
+      // サロゲートペアを分割しないように20文字に制限
+      const safeName = Array.from(newEntry.name)
+        .slice(0, 20)
+        .join('');
+
       await addDoc(collection(this.db, COLLECTION_NAME), {
-        name: newEntry.name.substring(0, 20), // 名前を20文字に制限
+        name: safeName,
         score: newEntry.score,
         time: newEntry.time,
         difficulty,

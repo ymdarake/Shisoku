@@ -55,6 +55,7 @@ export const locales: Locales = {
     difficultyEasy: 'かんたん',
     difficultyNormal: 'ふつう',
     difficultyHard: 'むずかしい',
+    nameTooLong: '名前は20文字以内にしてください',
   },
   en: {
     title: 'Math Puzzle Game',
@@ -110,5 +111,6 @@ export const locales: Locales = {
     difficultyEasy: 'Easy',
     difficultyNormal: 'Normal',
     difficultyHard: 'Hard',
+    nameTooLong: 'Name must be 20 characters or less',
   },
 };
