@@ -1,23 +1,20 @@
 import React from 'react';
 import type { Language, Locale } from '../types';
-import { MusicOnIcon, MusicOffIcon, SfxOnIcon, SfxOffIcon } from './icons';
+import { SfxOnIcon, SfxOffIcon } from './icons';
 import { useDarkMode } from '../hooks/useDarkMode';
-import { KOFI_URL } from '../constant/kofi';
 
 interface HeaderProps {
   title: string;
   language: Language;
   onLanguageChange: (lang: Language) => void;
   languageLabel: string;
-  isBgmOn: boolean;
-  isSfxOn: boolean;
-  onToggleBgm: () => void;
-  onToggleSfx: () => void;
+  isSoundOn: boolean;
+  onToggleSound: () => void;
   locale: Locale;
   onTitleClick?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ title, language, onLanguageChange, languageLabel, isBgmOn, isSfxOn, onToggleBgm, onToggleSfx, locale, onTitleClick }) => {
+export const Header: React.FC<HeaderProps> = ({ title, language, onLanguageChange, languageLabel, isSoundOn, onToggleSound, locale, onTitleClick }) => {
   const [isDark, toggleDarkMode] = useDarkMode();
 
   return (
@@ -33,18 +30,11 @@ export const Header: React.FC<HeaderProps> = ({ title, language, onLanguageChang
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <button
-              onClick={onToggleBgm}
+              onClick={onToggleSound}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-              aria-label={isBgmOn ? locale.bgmOff as string : locale.bgmOn as string}
+              aria-label={isSoundOn ? locale.soundOff as string : locale.soundOn as string}
             >
-              {isBgmOn ? <MusicOnIcon /> : <MusicOffIcon />}
-            </button>
-            <button
-              onClick={onToggleSfx}
-              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-              aria-label={isSfxOn ? locale.sfxOff as string : locale.sfxOn as string}
-            >
-              {isSfxOn ? <SfxOnIcon /> : <SfxOffIcon />}
+              {isSoundOn ? <SfxOnIcon /> : <SfxOffIcon />}
             </button>
             {/* ダークモードトグル */}
             <button
@@ -64,28 +54,6 @@ export const Header: React.FC<HeaderProps> = ({ title, language, onLanguageChang
                 </svg>
               )}
             </button>
-            {/* Ko-fi ボタン */}
-            {KOFI_URL ? (
-              <a
-                href={KOFI_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-orange-100 dark:hover:bg-orange-900 transition"
-                aria-label="Support me on Ko-fi"
-                title="Support me on Ko-fi"
-              >
-                <span className="text-2xl" aria-hidden="true">☕</span>
-              </a>
-            ) : (
-              <button
-                disabled
-                className="p-2 rounded-full cursor-default opacity-50"
-                aria-label="Ko-fi coming soon"
-                title="Ko-fi coming soon"
-              >
-                <span className="text-2xl" aria-hidden="true">☕</span>
-              </button>
-            )}
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-sm font-medium hidden sm:inline">{languageLabel}</span>

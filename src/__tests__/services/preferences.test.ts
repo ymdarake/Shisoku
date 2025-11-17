@@ -38,8 +38,7 @@ describe('preferences repository (via DI)', () => {
 
     it('should save and load preferences round-trip', async () => {
         const prefs: UserPreferences = {
-            isBgmOn: false,
-            isSfxOn: true,
+            isSoundOn: true,
             language: 'en',
             difficulty: 'hard',
         }
@@ -52,6 +51,44 @@ describe('preferences repository (via DI)', () => {
         localStorage.setItem('mathPuzzlePreferences:v1', 'not json')
         const loaded = await repo.load()
         expect(loaded).toBeNull()
+    })
+
+    it('should migrate old format (isBgmOn, isSfxOn) to new format (isSoundOn)', async () => {
+        // 旧形式のデータを直接localStorageに保存
+        const oldPrefs = {
+            isBgmOn: true,
+            isSfxOn: true,
+            language: 'ja',
+            difficulty: 'normal',
+        }
+        localStorage.setItem('mathPuzzlePreferences:v1', JSON.stringify(oldPrefs))
+
+        // ロード時に新形式に変換されることを確認
+        const loaded = await repo.load()
+        expect(loaded).toEqual({
+            isSoundOn: true,
+            language: 'ja',
+            difficulty: 'normal',
+        })
+    })
+
+    it('should migrate old format with mixed sound settings to false', async () => {
+        // BGMはON、SFXはOFFの場合
+        const oldPrefs = {
+            isBgmOn: true,
+            isSfxOn: false,
+            language: 'en',
+            difficulty: 'easy',
+        }
+        localStorage.setItem('mathPuzzlePreferences:v1', JSON.stringify(oldPrefs))
+
+        // どちらか一方がfalseの場合、isSoundOnはfalseになる
+        const loaded = await repo.load()
+        expect(loaded).toEqual({
+            isSoundOn: false,
+            language: 'en',
+            difficulty: 'easy',
+        })
     })
 })
 

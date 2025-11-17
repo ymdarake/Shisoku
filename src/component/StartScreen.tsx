@@ -25,7 +25,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onShowRanking
       <div className="mt-4">
         <DifficultySelector difficulty={difficulty} onSelect={(d) => onSelectDifficulty?.(d)} locale={locale} />
       </div>
-      <div className="mt-6 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+      <div className="mt-6 flex flex-row items-center justify-center space-x-4">
         <button
           onClick={onStart}
           className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105"

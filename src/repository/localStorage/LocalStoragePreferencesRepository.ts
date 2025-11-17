@@ -10,6 +10,16 @@ export class LocalStoragePreferencesRepository implements PreferencesRepository 
             if (!raw) return null;
             const parsed = JSON.parse(raw);
             if (!parsed || typeof parsed !== 'object') return null;
+
+            // マイグレーション: 旧形式（isBgmOn, isSfxOn）から新形式（isSoundOn）へ変換
+            if ('isBgmOn' in parsed || 'isSfxOn' in parsed) {
+                const isBgmOn = parsed.isBgmOn ?? true;
+                const isSfxOn = parsed.isSfxOn ?? true;
+                parsed.isSoundOn = isBgmOn && isSfxOn;
+                delete parsed.isBgmOn;
+                delete parsed.isSfxOn;
+            }
+
             return parsed as UserPreferences;
         } catch {
             return null;

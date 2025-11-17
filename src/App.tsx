@@ -28,8 +28,7 @@ const App: React.FC = () => {
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [rankings, setRankings] = useState<RankingEntry[]>([]);
-  const [isBgmOn, setIsBgmOn] = useState(true);
-  const [isSfxOn, setIsSfxOn] = useState(true);
+  const [isSoundOn, setIsSoundOn] = useState(true);
   const [isShaking, setIsShaking] = useState(false);
   const [allProblems, setAllProblems] = useState<Problem[]>([]);
   const [showCountdown, setShowCountdown] = useState(false);
@@ -52,8 +51,7 @@ const App: React.FC = () => {
       if (prefs) {
         setLanguage(prefs.language);
         setDifficulty(prefs.difficulty);
-        setIsBgmOn(prefs.isBgmOn);
-        setIsSfxOn(prefs.isSfxOn);
+        setIsSoundOn(prefs.isSoundOn);
       }
       setPrefsLoaded(true);
     })();
@@ -65,10 +63,9 @@ const App: React.FC = () => {
     void preferencesRepository.save({
       language,
       difficulty,
-      isBgmOn,
-      isSfxOn,
+      isSoundOn,
     });
-  }, [language, difficulty, isBgmOn, isSfxOn, prefsLoaded, preferencesRepository]);
+  }, [language, difficulty, isSoundOn, prefsLoaded, preferencesRepository]);
 
   useEffect(() => {
     let interval: number | undefined;
@@ -152,12 +149,10 @@ const App: React.FC = () => {
     setGameState('ranking');
   };
 
-  const handleToggleBgm = () => {
-    setIsBgmOn(audioService.toggleBgm());
-  }
-
-  const handleToggleSfx = () => {
-    setIsSfxOn(audioService.toggleSfx());
+  const handleToggleSound = () => {
+    const newState = audioService.toggleBgm();
+    audioService.toggleSfx();
+    setIsSoundOn(newState);
   }
 
   const playClickSound = useCallback(() => audioService.playClickSound(), []);
@@ -237,10 +232,8 @@ const App: React.FC = () => {
         language={language}
         onLanguageChange={handleLanguageChange}
         languageLabel={locale.language as string}
-        isBgmOn={isBgmOn}
-        isSfxOn={isSfxOn}
-        onToggleBgm={handleToggleBgm}
-        onToggleSfx={handleToggleSfx}
+        isSoundOn={isSoundOn}
+        onToggleSound={handleToggleSound}
         locale={locale}
         onTitleClick={handleBackToTop}
       />
