@@ -2,6 +2,7 @@ import React from 'react';
 import type { Language, Locale } from '../types';
 import { MusicOnIcon, MusicOffIcon, SfxOnIcon, SfxOffIcon } from './icons';
 import { useDarkMode } from '../hooks/useDarkMode';
+import { KOFI_URL } from '../constant/kofi';
 
 interface HeaderProps {
   title: string;
@@ -63,6 +64,28 @@ export const Header: React.FC<HeaderProps> = ({ title, language, onLanguageChang
                 </svg>
               )}
             </button>
+            {/* Ko-fi ボタン */}
+            {KOFI_URL ? (
+              <a
+                href={KOFI_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full hover:bg-orange-100 dark:hover:bg-orange-900 transition"
+                aria-label="Support me on Ko-fi"
+                title="Support me on Ko-fi"
+              >
+                <span className="text-2xl" aria-hidden="true">☕</span>
+              </a>
+            ) : (
+              <button
+                disabled
+                className="p-2 rounded-full cursor-default opacity-50"
+                aria-label="Ko-fi coming soon"
+                title="Ko-fi coming soon"
+              >
+                <span className="text-2xl" aria-hidden="true">☕</span>
+              </button>
+            )}
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-sm font-medium hidden sm:inline">{languageLabel}</span>

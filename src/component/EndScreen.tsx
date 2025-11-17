@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { GameResult } from '../types';
 import { openTwitterShare } from '../utils/share';
 import { formatTime } from '../utils/formatTime';
+import { KofiWidget } from './KofiWidget';
+import { KOFI_URL } from '../constant/kofi';
 
 interface EndScreenProps {
   results: GameResult[];
@@ -52,6 +54,9 @@ export const EndScreen: React.FC<EndScreenProps> = ({ results, onPlayAgain, onBa
           <span>{locale.shareScore}</span>
         </button>
       </div>
+
+      {/* Ko-fi ウィジェット */}
+      <KofiWidget kofiUrl={KOFI_URL} />
 
       <div className="max-w-md mx-auto my-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <label htmlFor="name-input" className="block text-center font-medium mb-2">{locale.enterYourName}</label>

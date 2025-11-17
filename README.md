@@ -57,7 +57,7 @@
 - **React 19** - UI フレームワーク（npmパッケージ）
 - **TypeScript 5.8** - 型安全な開発
 - **Vite 6** - 高速ビルドツール
-- **Tone.js 14.7.77** - Web Audio API ベースの音楽ライブラリ（CDN経由）
+- **Web Audio API** - 純粋なブラウザAPIによる音楽・効果音（ライブラリ依存なし）
 - **Tailwind CSS 3** - ユーティリティファーストCSS（ローカルビルド with PostCSS）
 
 ## ローカル実行
@@ -81,9 +81,17 @@
    npm run preview # ビルド後のプレビュー
    ```
 
-**注意**:
-- インターネット接続が必須（Tone.jsがCDN経由）
-- Gemini APIキーは不要（AI Studio連携は未使用）
+## Ko-fi設定（開発者向け）
+
+Ko-fi寄付ボタンを有効化する手順：
+
+1. [Ko-fi](https://ko-fi.com)でアカウント登録
+2. PayPalまたはStripeで決済方法を設定
+3. `src/constant/kofi.ts` を編集：
+   ```typescript
+   export const KOFI_URL = 'https://ko-fi.com/yourname'; // 実際のURLに変更
+   ```
+4. ゲーム終了画面とスタート画面に「Support me on Ko-fi」ボタンが表示されます
 
 ## プロジェクト構造
 

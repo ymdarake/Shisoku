@@ -1,6 +1,8 @@
 import React from 'react';
 import { Rules } from './Rules';
 import { DifficultySelector } from './DifficultySelector';
+import { KofiWidget } from './KofiWidget';
+import { KOFI_URL } from '../constant/kofi';
 import type { Difficulty } from '../types';
 
 interface StartScreenProps {
@@ -36,6 +38,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onShowRanking
         >
           {locale.ranking}
         </button>
+      </div>
+
+      {/* Ko-fi ウィジェット */}
+      <div className="mt-6">
+        <KofiWidget kofiUrl={KOFI_URL} />
       </div>
     </div>
   );
