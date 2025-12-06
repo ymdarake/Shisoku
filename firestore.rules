@@ -16,7 +16,7 @@ service cloud.firestore {
                     && request.resource.data.score >= 0
                     && request.resource.data.score <= 10
                     && request.resource.data.time is int
-                    && request.resource.data.time >= 20
+                    && request.resource.data.time >= 0
                     && request.resource.data.time <= 3600
                     && request.resource.data.difficulty is string
                     && request.resource.data.difficulty in ['easy', 'normal', 'hard']

@@ -38,6 +38,17 @@
 5. 「アプリを登録」をクリック
 6. **SDK設定情報をコピー** （次のステップで使用）
 
+### 3.1. ドメインの許可（重要）
+
+GitHub Pages からアクセスできるようにするため、ドメインを許可リストに追加します：
+
+1. Firebase Console の左メニューから「Authentication」を選択
+2. 「Settings」タブ → 「Authorized domains」を選択
+3. 「Add domain」をクリック
+4. GitHub Pagesのドメイン（例: `ymdarake.github.io`）を入力して追加
+
+※ Authenticationを使っていなくても、CORSやセキュリティ設定のために推奨されます。
+
 表示される設定は以下のような形式：
 
 ```javascript

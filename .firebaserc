@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "shisoku-prd",
+    "prd": "shisoku-prd",
+    "tes": "shisoku-tes"
+  },
+  "targets": {},
+  "etags": {}
+}
