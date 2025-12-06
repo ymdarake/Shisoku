@@ -12,6 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # 開発サーバー起動（localhost:3000）
 npm run dev
 
+
 # プロダクションビルド
 npm run build
 
